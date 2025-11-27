@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Disallow private/admin areas (add when app is built)
+# Disallow: /admin/
+# Disallow: /api/
+
+# Sitemap
+Sitemap: https://ocvault.com/sitemap.xml

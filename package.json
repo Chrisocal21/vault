@@ -1,0 +1,21 @@
+{
+  "name": "oc-vault-landing",
+  "version": "1.0.0",
+  "description": "OC Vault - Professional Photographer's Cloud Backup Landing Page",
+  "scripts": {
+    "dev": "npx serve . -l 3000",
+    "start": "npx serve . -l 3000",
+    "deploy": "wrangler pages deploy . --project-name=oc-vault"
+  },
+  "keywords": [
+    "photography",
+    "cloud-storage",
+    "backup",
+    "pwa"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.1"
+  }
+}

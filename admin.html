@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OC Vault - Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            
+            /* Dark mode */
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        h1 {
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-secondary);
+        }
+
+        .grid {
+            display: grid;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .card h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        tr:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-admin {
+            background: var(--primary);
+            color: white;
+        }
+
+        .badge-user {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.25rem;
+            padding: 0.25rem;
+            transition: transform 0.2s;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔐 Admin Panel</h1>
+            <a href="index.html" class="btn btn-secondary">← Back to Vault</a>
+        </header>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Users</div>
+                <div class="stat-value" id="totalUsers">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Admin Users</div>
+                <div class="stat-value" id="adminUsers">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Storage</div>
+                <div class="stat-value" id="totalStorage">0 GB</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Files</div>
+                <div class="stat-value" id="totalFiles">0</div>
+            </div>
+        </div>
+
+        <div class="grid">
+            <!-- Create User Form -->
+            <div class="card">
+                <h2>Create New User</h2>
+                <div id="successAlert" class="alert alert-success" style="display: none;"></div>
+                <form id="createUserForm">
+                    <div class="form-group">
+                        <label for="username">Username *</label>
+                        <input type="text" id="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password *</label>
+                        <input type="password" id="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="role">Role</label>
+                        <select id="role">
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="storageLimit">Storage Limit (GB)</label>
+                        <input type="number" id="storageLimit" value="50" min="1">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create User</button>
+                </form>
+            </div>
+
+            <!-- Users List -->
+            <div class="card">
+                <h2>Users</h2>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Storage</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTable">
+                            <tr>
+                                <td colspan="6" class="empty-state">No users yet. Create your first user above.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // User storage
+        let users = JSON.parse(localStorage.getItem('ocvault_users')) || [];
+
+        // Create default admin if no users exist
+        if (users.length === 0) {
+            users.push({
+                id: Date.now(),
+                username: 'admin',
+                email: 'admin@ocvault.com',
+                password: 'admin123', // In production, hash this!
+                role: 'admin',
+                storageLimit: 100,
+                storageUsed: 0,
+                created: new Date().toISOString()
+            });
+            saveUsers();
+        }
+
+        function saveUsers() {
+            localStorage.setItem('ocvault_users', JSON.stringify(users));
+            updateStats();
+            renderUsers();
+        }
+
+        function updateStats() {
+            const totalUsers = users.length;
+            const adminUsers = users.filter(u => u.role === 'admin').length;
+            const totalStorage = users.reduce((sum, u) => sum + u.storageUsed, 0);
+            
+            document.getElementById('totalUsers').textContent = totalUsers;
+            document.getElementById('adminUsers').textContent = adminUsers;
+            document.getElementById('totalStorage').textContent = (totalStorage / 1024).toFixed(2);
+            document.getElementById('totalFiles').textContent = '0'; // Placeholder
+        }
+
+        function renderUsers() {
+            const tbody = document.getElementById('usersTable');
+            
+            if (users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No users yet. Create your first user above.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = users.map(user => `
+                <tr>
+                    <td><strong>${user.username}</strong></td>
+                    <td>${user.email}</td>
+                    <td><span class="badge badge-${user.role}">${user.role}</span></td>
+                    <td>${user.storageUsed} GB / ${user.storageLimit} GB</td>
+                    <td>${new Date(user.created).toLocaleDateString()}</td>
+                    <td class="actions">
+                        <button class="action-btn" onclick="editUser(${user.id})" title="Edit">✏️</button>
+                        <button class="action-btn" onclick="deleteUser(${user.id})" title="Delete">🗑️</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteUser(id) {
+            const user = users.find(u => u.id === id);
+            if (user && user.username === 'admin') {
+                alert('Cannot delete the default admin user!');
+                return;
+            }
+            
+            if (confirm(`Are you sure you want to delete this user?`)) {
+                users = users.filter(u => u.id !== id);
+                saveUsers();
+            }
+        }
+
+        function editUser(id) {
+            const user = users.find(u => u.id === id);
+            if (!user) return;
+
+            const newLimit = prompt(`Enter new storage limit (GB) for ${user.username}:`, user.storageLimit);
+            if (newLimit !== null) {
+                user.storageLimit = parseInt(newLimit);
+                saveUsers();
+            }
+        }
+
+        // Form submission
+        document.getElementById('createUserForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('role').value;
+            const storageLimit = parseInt(document.getElementById('storageLimit').value);
+
+            // Check if username exists
+            if (users.some(u => u.username === username)) {
+                alert('Username already exists!');
+                return;
+            }
+
+            // Check if email exists
+            if (users.some(u => u.email === email)) {
+                alert('Email already exists!');
+                return;
+            }
+
+            // Create new user
+            const newUser = {
+                id: Date.now(),
+                username,
+                email,
+                password, // In production, hash this!
+                role,
+                storageLimit,
+                storageUsed: 0,
+                created: new Date().toISOString()
+            };
+
+            users.push(newUser);
+            saveUsers();
+
+            // Show success message
+            const alert = document.getElementById('successAlert');
+            alert.textContent = `User "${username}" created successfully!`;
+            alert.style.display = 'block';
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 3000);
+
+            // Reset form
+            e.target.reset();
+        });
+
+        // Initialize
+        updateStats();
+        renderUsers();
+    </script>
+</body>
+</html>
