@@ -324,11 +324,13 @@
         
         .file-item {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             padding: 1rem 1.5rem;
             border-bottom: 1px solid var(--border);
             transition: background 0.2s;
             cursor: pointer;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
         
         .file-item:hover {
@@ -348,6 +350,7 @@
         .file-info {
             flex: 1;
             min-width: 0;
+            min-width: 200px;
         }
         
         .file-name {
@@ -367,6 +370,8 @@
         .file-actions {
             display: flex;
             gap: 0.5rem;
+            flex-wrap: wrap;
+            align-items: center;
         }
         
         .action-btn {
@@ -377,6 +382,7 @@
             cursor: pointer;
             transition: all 0.2s;
             font-size: 0.875rem;
+            white-space: nowrap;
         }
         
         .action-btn:hover {
@@ -467,6 +473,112 @@
             100% { transform: rotate(360deg); }
         }
         
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            max-width: 90vw;
+            max-height: 90vh;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .modal-image,
+        .modal-video {
+            max-width: 90vw;
+            max-height: 90vh;
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .modal-info {
+            position: absolute;
+            bottom: -60px;
+            left: 0;
+            right: 0;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+        }
+        
+        .modal-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 1rem;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        
+        .modal-nav:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .modal-prev {
+            left: 20px;
+        }
+        
+        .modal-next {
+            right: 20px;
+        }
+        
+        /* Thumbnail preview */
+        .file-thumbnail {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .compression-badge {
+            display: inline-block;
+            background: var(--success);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+        
         /* Footer */
         footer {
             background: var(--bg-secondary);
@@ -498,30 +610,85 @@
         
         /* Responsive */
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
+            .app-container {
+                padding: 1rem;
             }
             
-            .hero p {
-                font-size: 1.1rem;
-            }
-            
-            .section-header h2 {
-                font-size: 2rem;
+            .vault-header h1 {
+                font-size: 1.5rem;
             }
             
             .nav-links {
-                display: none; /* Simple hide for mobile - add hamburger menu in production */
+                gap: 0.5rem;
             }
             
-            .feature-grid,
-            .steps,
-            .pricing-cards {
-                grid-template-columns: 1fr;
+            .nav-links a {
+                font-size: 0.875rem;
             }
             
-            .pricing-card.featured {
-                transform: scale(1);
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .upload-section {
+                padding: 2rem 1rem;
+            }
+            
+            .file-item {
+                padding: 1rem;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .file-icon {
+                font-size: 1.5rem;
+                margin-right: 0.75rem;
+            }
+            
+            .file-info {
+                flex: 1;
+                width: 100%;
+                margin-bottom: 0.75rem;
+            }
+            
+            .file-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            
+            .action-btn {
+                font-size: 0.75rem;
+                padding: 0.4rem 0.6rem;
+                flex: 1;
+                min-width: 0;
+            }
+            
+            .files-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+                padding: 1rem;
+            }
+            
+            .grid-item {
+                padding: 0.75rem;
+            }
+            
+            .modal-content {
+                max-width: 95vw;
+                max-height: 85vh;
+            }
+            
+            .modal-nav {
+                padding: 0.75rem;
+                font-size: 1.5rem;
+            }
+            
+            .modal-prev {
+                left: 10px;
+            }
+            
+            .modal-next {
+                right: 10px;
             }
         }
         
@@ -594,12 +761,12 @@
         <section class="upload-section" id="uploadSection">
             <div class="upload-icon">☁️</div>
             <h3>Upload Files</h3>
-            <p>Drag and drop files or folders here, or click to browse</p>
-            <div class="upload-actions">
-                <label for="fileInput" class="btn btn-primary">Choose Files</label>
-                <label for="folderInput" class="btn btn-secondary">Choose Folder</label>
+            <p>Drag and drop files or folders here, or use buttons below</p>
+            <div class="upload-actions" onclick="event.stopPropagation()">
+                <label for="fileInput" class="btn btn-primary">📁 Choose Files</label>
+                <label for="folderInput" class="btn btn-secondary">📂 Choose Folder</label>
             </div>
-            <input type="file" id="fileInput" class="file-input" multiple>
+            <input type="file" id="fileInput" class="file-input" multiple accept="*/*">
             <input type="file" id="folderInput" class="file-input" webkitdirectory directory multiple>
         </section>
 
@@ -683,32 +850,77 @@
             handleFiles(e.dataTransfer.files);
         });
 
-        uploadSection.addEventListener('click', () => {
-            fileInput.click();
+        // Don't trigger click on the upload section itself
+        uploadSection.addEventListener('click', (e) => {
+            if (e.target.tagName !== 'LABEL' && e.target.tagName !== 'INPUT') {
+                fileInput.click();
+            }
         });
 
         fileInput.addEventListener('change', (e) => {
-            handleFiles(e.target.files);
+            if (e.target.files.length > 0) {
+                handleFiles(e.target.files);
+                e.target.value = ''; // Reset input
+            }
         });
 
         folderInput.addEventListener('change', (e) => {
-            handleFiles(e.target.files);
+            if (e.target.files.length > 0) {
+                handleFiles(e.target.files);
+                e.target.value = ''; // Reset input
+            }
         });
 
-        function handleFiles(fileList) {
-            const newFiles = Array.from(fileList).map(file => ({
-                id: Date.now() + Math.random(),
-                name: file.name,
-                size: file.size,
-                type: file.type,
-                date: new Date().toISOString(),
-                data: null // In production, upload to server/R2
-            }));
+        async function handleFiles(fileList) {
+            console.log('Handling files:', fileList.length);
+            
+            const processedFiles = [];
+            
+            for (let i = 0; i < fileList.length; i++) {
+                const file = fileList[i];
+                const fileData = {
+                    id: Date.now() + Math.random() + i,
+                    name: file.name,
+                    size: file.size,
+                    originalSize: file.size,
+                    type: file.type || 'application/octet-stream',
+                    date: new Date().toISOString(),
+                    compressed: false,
+                    thumbnail: null,
+                    data: null
+                };
+                
+                // Compress images and videos
+                if (file.type.startsWith('image/')) {
+                    const compressed = await compressImage(file);
+                    if (compressed) {
+                        fileData.size = compressed.size;
+                        fileData.compressed = true;
+                        fileData.thumbnail = compressed.thumbnail;
+                        fileData.data = compressed.data;
+                    }
+                } else if (file.type.startsWith('video/')) {
+                    // Generate thumbnail for videos
+                    const thumb = await generateVideoThumbnail(file);
+                    if (thumb) {
+                        fileData.thumbnail = thumb;
+                    }
+                }
+                
+                processedFiles.push(fileData);
+            }
 
-            files = [...files, ...newFiles];
+            console.log('Processed files:', processedFiles);
+            files = [...files, ...processedFiles];
             saveFiles();
             renderFiles();
             updateStats();
+            
+            const totalSaved = processedFiles.reduce((sum, f) => sum + (f.originalSize - f.size), 0);
+            const savedPercent = totalSaved > 0 ? Math.round((totalSaved / processedFiles.reduce((sum, f) => sum + f.originalSize, 0)) * 100) : 0;
+            
+            // Show confirmation
+            alert(`Successfully uploaded ${processedFiles.length} file(s)!\n${savedPercent > 0 ? `Saved ${formatBytes(totalSaved)} (${savedPercent}% compression) 🗜️` : ''}`);
         }
 
         function saveFiles() {
@@ -768,28 +980,53 @@
             }
 
             // List view
-            filesList.innerHTML = files.map(file => `
-                <div class="file-item">
-                    <div class="file-icon">${getFileIcon(file.type)}</div>
-                    <div class="file-info">
-                        <div class="file-name">${file.name}</div>
-                        <div class="file-meta">${formatBytes(file.size)} • ${formatDate(file.date)}</div>
+            filesList.innerHTML = files.map(file => {
+                const isMedia = file.type.startsWith('image/') || file.type.startsWith('video/');
+                const compressionSaved = file.originalSize ? Math.round((1 - file.size / file.originalSize) * 100) : 0;
+                return `
+                <div class="file-item" ${isMedia ? `onclick="viewMedia(${file.id})" style="cursor: pointer;"` : ''}>
+                    <div style="display: flex; align-items: flex-start; flex: 1; min-width: 0; gap: 0.75rem;">
+                        <div class="file-icon">${getFileIcon(file.type)}</div>
+                        <div class="file-info">
+                            <div class="file-name">
+                                ${file.name}
+                                ${file.compressed ? `<span class="compression-badge">-${compressionSaved}% 🗜️</span>` : ''}
+                            </div>
+                            <div class="file-meta">
+                                ${formatBytes(file.size)}
+                                ${file.originalSize ? ` (was ${formatBytes(file.originalSize)})` : ''}
+                                <br class="mobile-break">${formatDate(file.date)}
+                                ${isMedia ? '<br class="mobile-break">Tap to view' : ''}
+                            </div>
+                        </div>
                     </div>
                     <div class="file-actions">
-                        <button class="action-btn" onclick="downloadFile(${file.id})">⬇ Download</button>
-                        <button class="action-btn danger" onclick="deleteFile(${file.id})">🗑️ Delete</button>
+                        ${isMedia ? `<button class="action-btn" onclick="event.stopPropagation(); viewMedia(${file.id})">👁️ View</button>` : ''}
+                        <button class="action-btn" onclick="event.stopPropagation(); downloadFile(${file.id})">⬇ Download</button>
+                        <button class="action-btn danger" onclick="event.stopPropagation(); deleteFile(${file.id})">🗑️ Delete</button>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
 
             // Grid view
-            filesGrid.innerHTML = files.map(file => `
-                <div class="grid-item">
-                    <div class="grid-icon">${getFileIcon(file.type)}</div>
+            filesGrid.innerHTML = files.map(file => {
+                const isMedia = file.type.startsWith('image/') || file.type.startsWith('video/');
+                const compressionSaved = file.originalSize ? Math.round((1 - file.size / file.originalSize) * 100) : 0;
+                return `
+                <div class="grid-item" onclick="event.stopPropagation()">
+                    ${file.thumbnail ? `<img src="${file.thumbnail}" class="file-thumbnail" onclick="viewMedia(${file.id})" style="cursor: pointer;" alt="${file.name}">` : `<div class="grid-icon">${getFileIcon(file.type)}</div>`}
                     <div class="grid-name" title="${file.name}">${file.name}</div>
-                    <div class="grid-size">${formatBytes(file.size)}</div>
+                    <div class="grid-size">
+                        ${formatBytes(file.size)}
+                        ${file.compressed ? `<br><span style="color: var(--success); font-size: 0.7rem;">-${compressionSaved}% 🗜️</span>` : ''}
+                    </div>
+                    <div style="margin-top: 0.5rem; display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+                        ${isMedia ? `<button class="action-btn" onclick="viewMedia(${file.id})" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">👁️</button>` : ''}
+                        <button class="action-btn" onclick="downloadFile(${file.id})" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">⬇️</button>
+                        <button class="action-btn danger" onclick="deleteFile(${file.id})" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">🗑️</button>
+                    </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         function updateStats() {
@@ -826,9 +1063,174 @@
             });
         });
 
+        // Image compression using Canvas API
+        async function compressImage(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        // Max dimensions for compression
+                        const MAX_WIDTH = 1920;
+                        const MAX_HEIGHT = 1920;
+                        const QUALITY = 0.8; // 80% quality
+                        
+                        let width = img.width;
+                        let height = img.height;
+                        
+                        // Calculate new dimensions
+                        if (width > height) {
+                            if (width > MAX_WIDTH) {
+                                height *= MAX_WIDTH / width;
+                                width = MAX_WIDTH;
+                            }
+                        } else {
+                            if (height > MAX_HEIGHT) {
+                                width *= MAX_HEIGHT / height;
+                                height = MAX_HEIGHT;
+                            }
+                        }
+                        
+                        // Create canvas
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        // Create thumbnail
+                        const thumbCanvas = document.createElement('canvas');
+                        const thumbSize = 200;
+                        thumbCanvas.width = thumbSize;
+                        thumbCanvas.height = thumbSize;
+                        const thumbCtx = thumbCanvas.getContext('2d');
+                        thumbCtx.drawImage(img, 0, 0, thumbSize, thumbSize);
+                        const thumbnail = thumbCanvas.toDataURL('image/jpeg', 0.7);
+                        
+                        // Convert to blob
+                        canvas.toBlob((blob) => {
+                            resolve({
+                                size: blob.size,
+                                data: canvas.toDataURL('image/jpeg', QUALITY),
+                                thumbnail: thumbnail
+                            });
+                        }, 'image/jpeg', QUALITY);
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        // Generate video thumbnail
+        async function generateVideoThumbnail(file) {
+            return new Promise((resolve) => {
+                const video = document.createElement('video');
+                const canvas = document.createElement('canvas');
+                video.preload = 'metadata';
+                
+                video.onloadedmetadata = () => {
+                    video.currentTime = 1; // Get frame at 1 second
+                };
+                
+                video.onseeked = () => {
+                    canvas.width = 200;
+                    canvas.height = 200;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(video, 0, 0, 200, 200);
+                    resolve(canvas.toDataURL('image/jpeg', 0.7));
+                };
+                
+                video.onerror = () => resolve(null);
+                
+                const url = URL.createObjectURL(file);
+                video.src = url;
+            });
+        }
+        
+        // View media in modal
+        let currentMediaIndex = 0;
+        let mediaFiles = [];
+        
+        function viewMedia(id) {
+            const file = files.find(f => f.id === id);
+            if (!file) return;
+            
+            mediaFiles = files.filter(f => f.type.startsWith('image/') || f.type.startsWith('video/'));
+            currentMediaIndex = mediaFiles.findIndex(f => f.id === id);
+            
+            showMediaModal(file);
+        }
+        
+        function showMediaModal(file) {
+            let modal = document.getElementById('mediaModal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'mediaModal';
+                modal.className = 'modal';
+                document.body.appendChild(modal);
+            }
+            
+            const isVideo = file.type.startsWith('video/');
+            const mediaElement = isVideo ? 
+                `<video class="modal-video" controls autoplay><source src="${file.data || file.thumbnail}" type="${file.type}">Your browser does not support the video tag.</video>` :
+                `<img class="modal-image" src="${file.data || file.thumbnail}" alt="${file.name}">`;
+            
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <button class="modal-close" onclick="closeMediaModal()">✕</button>
+                    ${mediaFiles.length > 1 ? `
+                        <button class="modal-nav modal-prev" onclick="navigateMedia(-1)">‹</button>
+                        <button class="modal-nav modal-next" onclick="navigateMedia(1)">›</button>
+                    ` : ''}
+                    ${mediaElement}
+                    <div class="modal-info">
+                        <strong>${file.name}</strong><br>
+                        ${formatBytes(file.size)} ${file.compressed ? `(compressed from ${formatBytes(file.originalSize)})` : ''}
+                        ${mediaFiles.length > 1 ? `<br>${currentMediaIndex + 1} of ${mediaFiles.length}` : ''}
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.add('active');
+            
+            // Close on background click
+            modal.onclick = (e) => {
+                if (e.target === modal) closeMediaModal();
+            };
+            
+            // Keyboard navigation
+            document.onkeydown = (e) => {
+                if (!modal.classList.contains('active')) return;
+                if (e.key === 'Escape') closeMediaModal();
+                if (e.key === 'ArrowLeft') navigateMedia(-1);
+                if (e.key === 'ArrowRight') navigateMedia(1);
+            };
+        }
+        
+        function closeMediaModal() {
+            const modal = document.getElementById('mediaModal');
+            if (modal) modal.classList.remove('active');
+            document.onkeydown = null;
+        }
+        
+        function navigateMedia(direction) {
+            currentMediaIndex += direction;
+            if (currentMediaIndex < 0) currentMediaIndex = mediaFiles.length - 1;
+            if (currentMediaIndex >= mediaFiles.length) currentMediaIndex = 0;
+            showMediaModal(mediaFiles[currentMediaIndex]);
+        }
+        
         // Initialize
+        console.log('Initializing OC Vault...');
+        console.log('Current files:', files);
         renderFiles();
         updateStats();
+
+        // Test button functionality
+        console.log('File input element:', fileInput);
+        console.log('Folder input element:', folderInput);
+        console.log('Upload section element:', uploadSection);
 
         // Header scroll effect
         const header = document.getElementById('header');
@@ -839,6 +1241,8 @@
                 header.classList.remove('scrolled');
             }
         });
+
+        console.log('OC Vault initialized successfully!');
     </script>
 </body>
 </html>
