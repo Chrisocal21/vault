@@ -1378,7 +1378,7 @@
                     updateStorageModeUI();
                 } else {
                     try {
-                        // Upload file metadata to D1 (actual files would go to R2)
+                        // Upload files to cloud storage
                         for (const fileData of processedFiles) {
                             const response = await fetch(`${API_BASE}/files`, {
                                 method: 'POST',
@@ -1392,9 +1392,10 @@
                                     size: fileData.size,
                                     originalSize: fileData.originalSize,
                                     type: fileData.type,
-                                    path: `uploads/${fileData.id}/${fileData.name}`, // R2 path
-                                    thumbnailPath: fileData.thumbnail ? `thumbnails/${fileData.id}.jpg` : null,
-                                    compressed: fileData.compressed
+                                    compressed: fileData.compressed,
+                                    compressionRatio: fileData.compressionRatio,
+                                    data: fileData.data,
+                                    thumbnail: fileData.thumbnail
                                 })
                             });
                             
