@@ -1,5 +1,5 @@
 // Vercel Serverless Function - Get/Upload/Delete Files
-import { kv } from '@vercel/kv';
+import { Redis } from '@upstash/redis';
 
 function authenticateRequest(req) {
   const token = req.headers.authorization?.replace('Bearer ', '');
@@ -44,15 +44,20 @@ export default async function handler(req, res) {
   const userId = user.id.toString();
   const filesKey = `user:${userId}:files`;
 
-  // Check if KV is available
-  const hasKV = process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN;
+  // Initialize Redis if available
+  let redis = null;
+  if (process.env.REDIS_URL) {
+    redis = Redis.fromEnv();
+  }
+  const hasRedis = !!redis;
   
   try {
     // GET /api/files - List files
     if (req.method === 'GET') {
       let files;
-      if (hasKV) {
-        files = await kv.get(filesKey) || [];
+      if (hasRedis) {
+        const data = await redis.get(filesKey);
+        files = data || [];
       } else {
         // Fallback to in-memory storage
         global.userFiles = global.userFiles || new Map();
@@ -66,8 +71,9 @@ export default async function handler(req, res) {
       const fileData = req.body;
       
       let files;
-      if (hasKV) {
-        files = await kv.get(filesKey) || [];
+      if (hasRedis) {
+        const data = await redis.get(filesKey);
+        files = data || [];
       } else {
         global.userFiles = global.userFiles || new Map();
         files = global.userFiles.get(userId) || [];
@@ -90,8 +96,8 @@ export default async function handler(req, res) {
 
       files.push(newFile);
       
-      if (hasKV) {
-        await kv.set(filesKey, files);
+      if (hasRedis) {
+        await redis.set(filesKey, files);
       } else {
         global.userFiles.set(userId, files);
       }
@@ -107,8 +113,9 @@ export default async function handler(req, res) {
       const fileId = req.url.split('/').pop();
       
       let files;
-      if (hasKV) {
-        files = await kv.get(filesKey) || [];
+      if (hasRedis) {
+        const data = await redis.get(filesKey);
+        files = data || [];
       } else {
         global.userFiles = global.userFiles || new Map();
         files = global.userFiles.get(userId) || [];
@@ -121,8 +128,8 @@ export default async function handler(req, res) {
 
       files = files.filter(f => f.id !== fileId);
       
-      if (hasKV) {
-        await kv.set(filesKey, files);
+      if (hasRedis) {
+        await redis.set(filesKey, files);
       } else {
         global.userFiles.set(userId, files);
       }
