@@ -50,23 +50,32 @@ async function handleAuth(request, env, corsHeaders) {
   if (path === '/api/auth/login' && request.method === 'POST') {
     const { username, password } = await request.json();
     
-    // Simple hardcoded auth for testing
-    if (username === 'admin' && password === '321password123') {
-      const token = crypto.randomUUID();
+    // Get credentials from environment variables or use defaults
+    const adminUsername = env.ADMIN_USERNAME || 'admin';
+    const adminPassword = env.ADMIN_PASSWORD || '321password123';
+    
+    // Simple auth check
+    if (username === adminUsername && password === adminPassword) {
       const user = {
         id: 1,
-        username: 'admin',
-        email: 'admin@ocvault.com',
+        username: adminUsername,
+        email: `${adminUsername}@ocvault.com`,
         role: 'admin',
         storage_quota: 53687091200,
         storage_used: 0,
       };
 
+      let token;
+      
       // Store session in KV if available
       if (env.VAULT_KV) {
+        token = crypto.randomUUID();
         await env.VAULT_KV.put(`session:${token}`, JSON.stringify(user), {
           expirationTtl: 604800, // 7 days
         });
+      } else {
+        // Use mock token when KV not available
+        token = `mock_token_${crypto.randomUUID()}`;
       }
 
       return jsonResponse({

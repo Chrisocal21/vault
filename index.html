@@ -1353,8 +1353,17 @@
                                 })
                             });
                             
+                            if (response.status === 401) {
+                                console.error('Unauthorized - token expired');
+                                localStorage.removeItem('ocvault_token');
+                                localStorage.removeItem('ocvault_user');
+                                updateAuthUI();
+                                showLoginModal();
+                                throw new Error('Please log in again');
+                            }
+                            
                             if (!response.ok) {
-                                console.error('Failed to upload file to cloud:', fileData.name);
+                                console.error('Failed to upload file to cloud:', fileData.name, response.status);
                                 throw new Error('Cloud upload failed');
                             }
                         }
@@ -1401,27 +1410,51 @@
             if (storageMode === 'local') {
                 files = JSON.parse(localStorage.getItem('ocvault_files') || '[]');
             } else {
-                // Load from cloud (D1)
+                // Load from cloud - check if logged in first
+                const token = localStorage.getItem('ocvault_token');
+                if (!token) {
+                    console.log('No token found - user needs to log in');
+                    files = [];
+                    return;
+                }
+
                 try {
                     const response = await fetch(`${API_BASE}/files`, {
                         headers: {
-                            'Authorization': `Bearer ${localStorage.getItem('ocvault_token')}`
+                            'Authorization': `Bearer ${token}`
                         }
                     });
+                    
+                    if (response.status === 401) {
+                        console.log('Token expired or invalid - please log in again');
+                        localStorage.removeItem('ocvault_token');
+                        localStorage.removeItem('ocvault_user');
+                        updateAuthUI();
+                        showLoginModal();
+                        files = [];
+                        return;
+                    }
+                    
                     if (response.ok) {
                         const data = await response.json();
                         files = data.files || [];
                     } else {
-                        console.error('Failed to load files from cloud');
+                        console.error('Failed to load files from cloud:', response.status);
                         files = [];
                     }
                 } catch (error) {
                     console.error('Cloud storage error:', error);
-                    alert('⚠️ Cloud storage unavailable. Switching to local mode.');
-                    storageMode = 'local';
-                    localStorage.setItem('ocvault_storage_mode', 'local');
-                    document.getElementById('storageMode').value = 'local';
-                    files = JSON.parse(localStorage.getItem('ocvault_files') || '[]');
+                    
+                    // Only switch to local if on localhost (API not available)
+                    if (isLocalhost) {
+                        alert('⚠️ Cloud API not available on localhost. Use "npx wrangler pages dev" or switch to local mode.');
+                        storageMode = 'local';
+                        localStorage.setItem('ocvault_storage_mode', 'local');
+                        document.getElementById('storageMode').value = 'local';
+                        files = JSON.parse(localStorage.getItem('ocvault_files') || '[]');
+                    } else {
+                        files = [];
+                    }
                 }
             }
         }
