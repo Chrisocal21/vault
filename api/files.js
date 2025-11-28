@@ -44,12 +44,18 @@ export default async function handler(req, res) {
   const userId = user.id.toString();
   const filesKey = `user:${userId}:files`;
 
-  // Initialize Redis if available
+  // Initialize Redis if available (fallback to in-memory if not configured)
   let redis = null;
-  if (process.env.REDIS_URL) {
-    redis = Redis.fromEnv();
+  let hasRedis = false;
+  
+  try {
+    if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+      redis = Redis.fromEnv();
+      hasRedis = true;
+    }
+  } catch (err) {
+    console.log('Redis not configured, using in-memory storage');
   }
-  const hasRedis = !!redis;
   
   try {
     // GET /api/files - List files
