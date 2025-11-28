@@ -1592,7 +1592,7 @@
             }
         }
 
-        function downloadFile(id) {
+        async function downloadFile(id) {
             console.log('Download clicked for ID:', id);
             const file = files.find(f => f.id === id);
             console.log('Found file:', file);
@@ -1608,47 +1608,63 @@
                 return;
             }
             
-            // Convert data URL to blob with correct MIME type
-            console.log('Creating download with MIME type:', file.type);
+            console.log('Initiating download - Device:', navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop');
+            console.log('File type:', file.type, 'Name:', file.name);
             
             try {
-                // Extract base64 data and create blob with original MIME type
-                fetch(file.data)
-                    .then(res => res.blob())
-                    .then(blob => {
-                        // Create new blob with correct MIME type for mobile device recognition
-                        const typedBlob = new Blob([blob], { type: file.type });
-                        const url = URL.createObjectURL(typedBlob);
-                        
-                        const link = document.createElement('a');
-                        link.href = url;
-                        link.download = file.name;
-                        
-                        // For mobile: use appropriate attributes
-                        if (/iPad|iPhone|iPod|Android/i.test(navigator.userAgent)) {
-                            // Mobile devices handle media files specially
-                            if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
-                                link.target = '_blank'; // Open in new tab for iOS
-                            }
-                        }
-                        
-                        link.style.display = 'none';
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                        
-                        // Clean up blob URL
-                        setTimeout(() => URL.revokeObjectURL(url), 1000);
-                        console.log('Download initiated for:', file.name, 'Type:', file.type);
-                    })
-                    .catch(err => {
-                        console.error('Download error:', err);
-                        alert('⚠️ Download failed. Please try again.');
-                    });
+                const isMobile = /iPad|iPhone|iPod|Android/i.test(navigator.userAgent);
+                const isIOS = /iPad|iPhone|iPod/i.test(navigator.userAgent);
+                const isMedia = file.type.startsWith('image/') || file.type.startsWith('video/');
+                
+                // Fetch and convert to blob with proper MIME type
+                const response = await fetch(file.data);
+                const blob = await response.blob();
+                const typedBlob = new Blob([blob], { type: file.type });
+                
+                if (isMobile && isMedia && isIOS) {
+                    // iOS Photos/Videos: Open in new window with share option
+                    const url = URL.createObjectURL(typedBlob);
+                    const newWindow = window.open(url, '_blank');
+                    if (!newWindow) {
+                        alert('📱 Please allow popups to save to Photos');
+                    }
+                    setTimeout(() => URL.revokeObjectURL(url), 5000);
+                } else if (isMobile && 'share' in navigator && isMedia) {
+                    // Use Web Share API for mobile (works on Android)
+                    try {
+                        const fileToShare = new File([typedBlob], file.name, { type: file.type });
+                        await navigator.share({
+                            files: [fileToShare],
+                            title: file.name,
+                            text: `Download ${file.name}`
+                        });
+                        console.log('Shared successfully');
+                    } catch (shareError) {
+                        console.log('Share failed, trying download:', shareError);
+                        // Fallback to regular download
+                        downloadViaLink(typedBlob, file.name);
+                    }
+                } else {
+                    // Desktop or non-media files: regular download
+                    downloadViaLink(typedBlob, file.name);
+                }
             } catch (err) {
                 console.error('Download error:', err);
-                alert('⚠️ Download failed. Please try again.');
+                alert('⚠️ Download failed: ' + err.message);
             }
+        }
+        
+        function downloadViaLink(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+            console.log('Download link triggered for:', filename);
         }
 
         function getFileIcon(type) {
