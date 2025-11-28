@@ -1592,21 +1592,31 @@
         }
 
         function downloadFile(id) {
+            console.log('Download clicked for ID:', id);
+            console.log('Available files:', files);
             const file = files.find(f => f.id === id);
-            if (file) {
-                if (!file.data) {
-                    console.error('File data missing:', file);
-                    alert('⚠️ Unable to download: File data not available. Please re-upload the file.');
-                    return;
-                }
-                // Create download link from stored data
-                const link = document.createElement('a');
-                link.href = file.data;
-                link.download = file.name;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+            console.log('Found file:', file);
+            
+            if (!file) {
+                alert('⚠️ File not found');
+                return;
             }
+            
+            if (!file.data) {
+                console.error('File data missing:', file);
+                alert('⚠️ Unable to download: File data not available. Please re-upload the file.');
+                return;
+            }
+            
+            // Create download link from stored data
+            console.log('Creating download link...');
+            const link = document.createElement('a');
+            link.href = file.data;
+            link.download = file.name;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            console.log('Download initiated for:', file.name);
         }
 
         function getFileIcon(type) {
