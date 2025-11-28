@@ -1594,6 +1594,11 @@
         function downloadFile(id) {
             const file = files.find(f => f.id === id);
             if (file) {
+                if (!file.data) {
+                    console.error('File data missing:', file);
+                    alert('⚠️ Unable to download: File data not available. Please re-upload the file.');
+                    return;
+                }
                 // Create download link from stored data
                 const link = document.createElement('a');
                 link.href = file.data;
