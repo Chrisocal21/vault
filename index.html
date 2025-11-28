@@ -1695,32 +1695,44 @@
                 reader.onload = (e) => {
                     const img = new Image();
                     img.onload = () => {
-                        // Max dimensions for compression
+                        // Compression settings
                         const MAX_WIDTH = 1920;
                         const MAX_HEIGHT = 1920;
-                        const QUALITY = 0.8; // 80% quality
+                        let quality = 0.85;
                         
                         let width = img.width;
                         let height = img.height;
+                        let wasResized = false;
                         
                         // Calculate new dimensions
                         if (width > height) {
                             if (width > MAX_WIDTH) {
-                                height *= MAX_WIDTH / width;
+                                height = Math.round(height * (MAX_WIDTH / width));
                                 width = MAX_WIDTH;
+                                wasResized = true;
                             }
                         } else {
                             if (height > MAX_HEIGHT) {
-                                width *= MAX_HEIGHT / height;
+                                width = Math.round(width * (MAX_HEIGHT / height));
                                 height = MAX_HEIGHT;
+                                wasResized = true;
                             }
                         }
+                        
+                        // Use lower quality for large images
+                        if (file.size > 1000000) quality = 0.75; // 1MB+
+                        if (file.size > 3000000) quality = 0.65; // 3MB+
+                        if (file.size > 5000000) quality = 0.55; // 5MB+
                         
                         // Create canvas
                         const canvas = document.createElement('canvas');
                         canvas.width = width;
                         canvas.height = height;
                         const ctx = canvas.getContext('2d');
+                        
+                        // Improve quality with better scaling
+                        ctx.imageSmoothingEnabled = true;
+                        ctx.imageSmoothingQuality = 'high';
                         ctx.drawImage(img, 0, 0, width, height);
                         
                         // Create thumbnail
@@ -1729,17 +1741,36 @@
                         thumbCanvas.width = thumbSize;
                         thumbCanvas.height = thumbSize;
                         const thumbCtx = thumbCanvas.getContext('2d');
-                        thumbCtx.drawImage(img, 0, 0, thumbSize, thumbSize);
+                        
+                        // Center crop for thumbnail
+                        const scale = Math.max(thumbSize / width, thumbSize / height);
+                        const scaledWidth = width * scale;
+                        const scaledHeight = height * scale;
+                        const offsetX = (thumbSize - scaledWidth) / 2;
+                        const offsetY = (thumbSize - scaledHeight) / 2;
+                        
+                        thumbCtx.drawImage(img, offsetX, offsetY, scaledWidth, scaledHeight);
                         const thumbnail = thumbCanvas.toDataURL('image/jpeg', 0.7);
                         
-                        // Convert to blob
+                        // Convert to blob with quality settings
                         canvas.toBlob((blob) => {
-                            resolve({
-                                size: blob.size,
-                                data: canvas.toDataURL('image/jpeg', QUALITY),
-                                thumbnail: thumbnail
-                            });
-                        }, 'image/jpeg', QUALITY);
+                            // If compressed is larger than original, use original
+                            if (blob.size >= file.size && !wasResized) {
+                                resolve({
+                                    size: file.size,
+                                    data: e.target.result,
+                                    thumbnail: thumbnail,
+                                    compressed: false
+                                });
+                            } else {
+                                resolve({
+                                    size: blob.size,
+                                    data: canvas.toDataURL('image/jpeg', quality),
+                                    thumbnail: thumbnail,
+                                    compressed: true
+                                });
+                            }
+                        }, 'image/jpeg', quality);
                     };
                     img.src = e.target.result;
                 };
@@ -1794,6 +1825,12 @@
                 modal.id = 'mediaModal';
                 modal.className = 'modal';
                 document.body.appendChild(modal);
+            }
+            
+            // Check if file has actual data or just metadata
+            if (!file.data && !file.thumbnail) {
+                alert('⚠️ File data not available\n\nThis file is stored in cloud metadata only. Full file storage with R2 is coming soon!');
+                return;
             }
             
             const isVideo = file.type.startsWith('video/');
@@ -2267,8 +2304,6 @@
             console.log('File input element:', fileInput);
             console.log('Folder input element:', folderInput);
             console.log('Upload section element:', uploadSection);
-            console.log('API Base:', API_BASE);
-            console.log('Current URL:', window.location.href);
             console.log('OC Vault initialized successfully!');
         }
         
