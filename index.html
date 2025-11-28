@@ -1594,7 +1594,6 @@
 
         function downloadFile(id) {
             console.log('Download clicked for ID:', id);
-            console.log('Available files:', files);
             const file = files.find(f => f.id === id);
             console.log('Found file:', file);
             
@@ -1609,26 +1608,38 @@
                 return;
             }
             
-            // Mobile-friendly download
-            console.log('Creating download link...');
+            // Convert data URL to blob with correct MIME type
+            console.log('Creating download with MIME type:', file.type);
             
-            // Convert data URL to blob for better mobile support
             try {
+                // Extract base64 data and create blob with original MIME type
                 fetch(file.data)
                     .then(res => res.blob())
                     .then(blob => {
-                        const url = URL.createObjectURL(blob);
+                        // Create new blob with correct MIME type for mobile device recognition
+                        const typedBlob = new Blob([blob], { type: file.type });
+                        const url = URL.createObjectURL(typedBlob);
+                        
                         const link = document.createElement('a');
                         link.href = url;
                         link.download = file.name;
+                        
+                        // For mobile: use appropriate attributes
+                        if (/iPad|iPhone|iPod|Android/i.test(navigator.userAgent)) {
+                            // Mobile devices handle media files specially
+                            if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
+                                link.target = '_blank'; // Open in new tab for iOS
+                            }
+                        }
+                        
                         link.style.display = 'none';
                         document.body.appendChild(link);
                         link.click();
                         document.body.removeChild(link);
                         
-                        // Clean up blob URL after a delay
+                        // Clean up blob URL
                         setTimeout(() => URL.revokeObjectURL(url), 1000);
-                        console.log('Download initiated for:', file.name);
+                        console.log('Download initiated for:', file.name, 'Type:', file.type);
                     })
                     .catch(err => {
                         console.error('Download error:', err);
