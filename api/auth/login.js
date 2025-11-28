@@ -23,6 +23,15 @@ export default async function handler(req, res) {
   const adminUsername = process.env.ADMIN_USERNAME || 'admin';
   const adminPassword = process.env.ADMIN_PASSWORD || '321password123';
 
+  // Debug logging (remove in production)
+  console.log('Login attempt:', { 
+    receivedUsername: username, 
+    expectedUsername: adminUsername,
+    usernameMatch: username === adminUsername,
+    passwordLength: password?.length,
+    expectedPasswordLength: adminPassword?.length
+  });
+
   if (username === adminUsername && password === adminPassword) {
     // Generate token
     const token = `vercel_token_${Date.now()}_${Math.random().toString(36).substring(7)}`;
