@@ -1710,7 +1710,7 @@
                     </div>
                     <div style="margin-top: 0.5rem; display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
                         ${isMedia ? `<button class="action-btn" onclick="viewMedia(${file.id})" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">👁️</button>` : ''}
-                        <button class="action-btn" onclick="downloadFile(${file.id})" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">⬇️</button>
+                        <button class="action-btn" onclick="event.stopPropagation(); downloadFile(${file.id})" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">⬇️</button>
                         <button class="action-btn danger" onclick="deleteFile(${file.id})" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">🗑️</button>
                     </div>
                 </div>
