@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="manifest" href="/manifest.json">
     
     <style>
         :root {
@@ -615,6 +616,20 @@
                 document.getElementById('adminPanel').classList.remove('authenticated');
             }
         });
+
+        // Service Worker registration
+        if ('serviceWorker' in navigator) {
+          window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/service-worker.js').then(
+              (registration) => {
+                console.log('Service Worker registered with scope:', registration.scope);
+              },
+              (error) => {
+                console.error('Service Worker registration failed:', error);
+              }
+            );
+          });
+        }
     </script>
     </div>
 </body>

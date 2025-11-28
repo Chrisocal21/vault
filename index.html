@@ -935,6 +935,21 @@
             animation: fadeInUp 0.8s ease-out;
         }
     </style>
+    <link rel="manifest" href="/manifest.json">
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/service-worker.js').then(
+            (registration) => {
+              console.log('Service Worker registered with scope:', registration.scope);
+            },
+            (error) => {
+              console.error('Service Worker registration failed:', error);
+            }
+          );
+        });
+      }
+    </script>
 </head>
 <body data-theme="dark">
     <!-- Header -->
@@ -2083,6 +2098,7 @@
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     console.log(`📦 Archive stored: ${formatBytes(file.size)} (Already compressed)`);
+                   
                     resolve({
                         size: file.size,
                         data: e.target.result,
