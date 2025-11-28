@@ -44,17 +44,34 @@ export default async function handler(req, res) {
   const userId = user.id.toString();
   const filesKey = `user:${userId}:files`;
 
+  // Check if KV is available
+  const hasKV = process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN;
+  
   try {
     // GET /api/files - List files
     if (req.method === 'GET') {
-      const files = await kv.get(filesKey) || [];
+      let files;
+      if (hasKV) {
+        files = await kv.get(filesKey) || [];
+      } else {
+        // Fallback to in-memory storage
+        global.userFiles = global.userFiles || new Map();
+        files = global.userFiles.get(userId) || [];
+      }
       return res.status(200).json({ files });
     }
 
     // POST /api/files - Upload file metadata
     if (req.method === 'POST') {
       const fileData = req.body;
-      const files = await kv.get(filesKey) || [];
+      
+      let files;
+      if (hasKV) {
+        files = await kv.get(filesKey) || [];
+      } else {
+        global.userFiles = global.userFiles || new Map();
+        files = global.userFiles.get(userId) || [];
+      }
 
       const newFile = {
         id: `${Date.now()}-${Math.random().toString(36).substring(7)}`,
@@ -72,7 +89,12 @@ export default async function handler(req, res) {
       };
 
       files.push(newFile);
-      await kv.set(filesKey, files);
+      
+      if (hasKV) {
+        await kv.set(filesKey, files);
+      } else {
+        global.userFiles.set(userId, files);
+      }
 
       return res.status(201).json({
         fileId: newFile.id,
@@ -83,7 +105,14 @@ export default async function handler(req, res) {
     // DELETE /api/files/:id
     if (req.method === 'DELETE') {
       const fileId = req.url.split('/').pop();
-      let files = await kv.get(filesKey) || [];
+      
+      let files;
+      if (hasKV) {
+        files = await kv.get(filesKey) || [];
+      } else {
+        global.userFiles = global.userFiles || new Map();
+        files = global.userFiles.get(userId) || [];
+      }
       
       const fileToDelete = files.find(f => f.id === fileId);
       if (!fileToDelete) {
@@ -91,14 +120,19 @@ export default async function handler(req, res) {
       }
 
       files = files.filter(f => f.id !== fileId);
-      await kv.set(filesKey, files);
+      
+      if (hasKV) {
+        await kv.set(filesKey, files);
+      } else {
+        global.userFiles.set(userId, files);
+      }
 
       return res.status(200).json({ message: 'File deleted successfully' });
     }
 
     return res.status(405).json({ error: 'Method not allowed' });
   } catch (error) {
-    console.error('KV Error:', error);
+    console.error('Storage Error:', error);
     return res.status(500).json({ error: 'Storage error: ' + error.message });
   }
 }
