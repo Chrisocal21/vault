@@ -1,5 +1,11 @@
 // Vercel Serverless Function - Get/Upload/Delete Files
-import { Redis } from '@upstash/redis';
+let Redis;
+try {
+  const upstash = await import('@upstash/redis');
+  Redis = upstash.Redis;
+} catch (err) {
+  console.log('Redis SDK not available');
+}
 
 function authenticateRequest(req) {
   const token = req.headers.authorization?.replace('Bearer ', '');
@@ -49,12 +55,12 @@ export default async function handler(req, res) {
   let hasRedis = false;
   
   try {
-    if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+    if (Redis && process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
       redis = Redis.fromEnv();
       hasRedis = true;
     }
   } catch (err) {
-    console.log('Redis not configured, using in-memory storage');
+    console.log('Redis not configured, using in-memory storage:', err.message);
   }
   
   try {
