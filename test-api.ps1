@@ -3,7 +3,7 @@
 Write-Host "Testing OC Vault Cloud API..." -ForegroundColor Cyan
 Write-Host ""
 
-$baseUrl = "https://d844bee4.oc-vault.pages.dev"
+$baseUrl = "https://vault-if2an7h3r-chrisoc.vercel.app"
 
 # Test 1: Login
 Write-Host "Test 1: Login" -ForegroundColor Yellow

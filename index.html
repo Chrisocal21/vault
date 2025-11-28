@@ -1864,33 +1864,7 @@
             // Hide error initially
             errorDiv.style.display = 'none';
             
-            // Local fallback authentication (for testing before backend is deployed)
-            if (username.trim() === 'admin' && password === '321password123') {
-                console.log('Local auth successful');
-                const mockToken = 'mock_token_' + Date.now();
-                const mockUser = {
-                    id: 1,
-                    username: 'admin',
-                    email: 'admin@ocvault.com',
-                    role: 'admin',
-                    storage_quota: 53687091200,
-                    storage_used: 0
-                };
-                
-                localStorage.setItem('ocvault_token', mockToken);
-                localStorage.setItem('ocvault_user', JSON.stringify(mockUser));
-                
-                closeLoginModal();
-                updateAuthUI();
-                
-                alert(`✅ Logged in as ${mockUser.username}\n\n⚠️ Using local authentication (Cloud API not deployed yet)\n\nYou can now switch to cloud mode, but files will still be stored locally until the backend is deployed.`);
-                
-                return;
-            }
-            
-            console.log('Local auth failed, checking credentials...');
-            
-            // Try cloud API authentication
+            // Try cloud API authentication first
             try {
                 const response = await fetch(`${API_BASE}/auth/login`, {
                     method: 'POST',
@@ -1922,6 +1896,30 @@
                 }
             } catch (error) {
                 console.error('Login error:', error);
+                
+                // Fallback to local auth only on localhost when API is unavailable
+                if (isLocalhost && username.trim() === 'admin' && password === '321password123') {
+                    console.log('Using local auth fallback (localhost only)');
+                    const mockToken = 'mock_token_' + Date.now();
+                    const mockUser = {
+                        id: 1,
+                        username: 'admin',
+                        email: 'admin@ocvault.com',
+                        role: 'admin',
+                        storage_quota: 53687091200,
+                        storage_used: 0
+                    };
+                    
+                    localStorage.setItem('ocvault_token', mockToken);
+                    localStorage.setItem('ocvault_user', JSON.stringify(mockUser));
+                    
+                    closeLoginModal();
+                    updateAuthUI();
+                    
+                    alert(`✅ Logged in locally\n\n⚠️ Cloud API not available on localhost\n\nDeploy to Vercel or use "vercel dev" for cloud storage.`);
+                    return;
+                }
+                
                 errorDiv.textContent = 'Invalid username or password';
                 errorDiv.style.display = 'block';
             }
@@ -2269,6 +2267,8 @@
             console.log('File input element:', fileInput);
             console.log('Folder input element:', folderInput);
             console.log('Upload section element:', uploadSection);
+            console.log('API Base:', API_BASE);
+            console.log('Current URL:', window.location.href);
             console.log('OC Vault initialized successfully!');
         }
         

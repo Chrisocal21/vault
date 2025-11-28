@@ -47,3 +47,4 @@ worker-configuration.d.ts
 *.tmp
 .cache/
 .temp/
+.vercel
