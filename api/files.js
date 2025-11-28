@@ -1,11 +1,4 @@
 // Vercel Serverless Function - Get/Upload/Delete Files
-let Redis;
-try {
-  const upstash = await import('@upstash/redis');
-  Redis = upstash.Redis;
-} catch (err) {
-  console.log('Redis SDK not available');
-}
 
 function authenticateRequest(req) {
   const token = req.headers.authorization?.replace('Bearer ', '');
@@ -50,46 +43,20 @@ export default async function handler(req, res) {
   const userId = user.id.toString();
   const filesKey = `user:${userId}:files`;
 
-  // Initialize Redis if available (fallback to in-memory if not configured)
-  let redis = null;
-  let hasRedis = false;
-  
-  try {
-    if (Redis && process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
-      redis = Redis.fromEnv();
-      hasRedis = true;
-    }
-  } catch (err) {
-    console.log('Redis not configured, using in-memory storage:', err.message);
-  }
+  // Use in-memory storage (Redis will be added later when properly configured)
+  global.userFiles = global.userFiles || new Map();
   
   try {
     // GET /api/files - List files
     if (req.method === 'GET') {
-      let files;
-      if (hasRedis) {
-        const data = await redis.get(filesKey);
-        files = data || [];
-      } else {
-        // Fallback to in-memory storage
-        global.userFiles = global.userFiles || new Map();
-        files = global.userFiles.get(userId) || [];
-      }
+      const files = global.userFiles.get(userId) || [];
       return res.status(200).json({ files });
     }
 
     // POST /api/files - Upload file metadata
     if (req.method === 'POST') {
       const fileData = req.body;
-      
-      let files;
-      if (hasRedis) {
-        const data = await redis.get(filesKey);
-        files = data || [];
-      } else {
-        global.userFiles = global.userFiles || new Map();
-        files = global.userFiles.get(userId) || [];
-      }
+      const files = global.userFiles.get(userId) || [];
 
       const newFile = {
         id: `${Date.now()}-${Math.random().toString(36).substring(7)}`,
@@ -107,12 +74,7 @@ export default async function handler(req, res) {
       };
 
       files.push(newFile);
-      
-      if (hasRedis) {
-        await redis.set(filesKey, files);
-      } else {
-        global.userFiles.set(userId, files);
-      }
+      global.userFiles.set(userId, files);
 
       return res.status(201).json({
         fileId: newFile.id,
@@ -123,28 +85,15 @@ export default async function handler(req, res) {
     // DELETE /api/files/:id
     if (req.method === 'DELETE') {
       const fileId = req.url.split('/').pop();
-      
-      let files;
-      if (hasRedis) {
-        const data = await redis.get(filesKey);
-        files = data || [];
-      } else {
-        global.userFiles = global.userFiles || new Map();
-        files = global.userFiles.get(userId) || [];
-      }
+      const files = global.userFiles.get(userId) || [];
       
       const fileToDelete = files.find(f => f.id === fileId);
       if (!fileToDelete) {
         return res.status(404).json({ error: 'File not found' });
       }
 
-      files = files.filter(f => f.id !== fileId);
-      
-      if (hasRedis) {
-        await redis.set(filesKey, files);
-      } else {
-        global.userFiles.set(userId, files);
-      }
+      const newFiles = files.filter(f => f.id !== fileId);
+      global.userFiles.set(userId, newFiles);
 
       return res.status(200).json({ message: 'File deleted successfully' });
     }
