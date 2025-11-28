@@ -1,4 +1,6 @@
 // Vercel Serverless Function - Delete specific file
+import Redis from 'ioredis';
+
 function authenticateRequest(req) {
   const token = req.headers.authorization?.replace('Bearer ', '');
   
@@ -42,18 +44,56 @@ export default async function handler(req, res) {
   }
 
   const { id } = req.query;
-  global.userFiles = global.userFiles || new Map();
   const userId = user.id.toString();
+  const filesKey = `user:${userId}:files`;
   
-  let files = global.userFiles.get(userId) || [];
-  const fileToDelete = files.find(f => f.id === id);
+  // Initialize Redis connection
+  let redis = null;
+  let useRedis = false;
   
-  if (!fileToDelete) {
-    return res.status(404).json({ error: 'File not found' });
+  if (process.env.REDIS_URL) {
+    try {
+      redis = new Redis(process.env.REDIS_URL);
+      useRedis = true;
+    } catch (err) {
+      console.error('Redis connection failed:', err);
+    }
   }
+  
+  // Fallback to in-memory if Redis not available
+  if (!useRedis) {
+    global.userFiles = global.userFiles || new Map();
+  }
+  
+  try {
+    let files;
+    if (useRedis) {
+      const data = await redis.get(filesKey);
+      files = data ? JSON.parse(data) : [];
+    } else {
+      files = global.userFiles.get(userId) || [];
+    }
+    
+    const fileToDelete = files.find(f => f.id === id);
+    
+    if (!fileToDelete) {
+      if (useRedis) redis.quit();
+      return res.status(404).json({ error: 'File not found' });
+    }
 
-  files = files.filter(f => f.id !== id);
-  global.userFiles.set(userId, files);
+    const newFiles = files.filter(f => f.id !== id);
+    
+    if (useRedis) {
+      await redis.set(filesKey, JSON.stringify(newFiles));
+      redis.quit();
+    } else {
+      global.userFiles.set(userId, newFiles);
+    }
 
-  return res.status(200).json({ message: 'File deleted successfully' });
+    return res.status(200).json({ message: 'File deleted successfully' });
+  } catch (error) {
+    console.error('Delete error:', error);
+    if (useRedis && redis) redis.quit();
+    return res.status(500).json({ error: 'Delete failed: ' + error.message });
+  }
 }
