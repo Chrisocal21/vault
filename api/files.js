@@ -1,4 +1,6 @@
 // Vercel Serverless Function - Get/Upload/Delete Files
+import { kv } from '@vercel/kv';
+
 function authenticateRequest(req) {
   const token = req.headers.authorization?.replace('Bearer ', '');
   
@@ -39,60 +41,64 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  // Initialize global storage
-  global.userFiles = global.userFiles || new Map();
   const userId = user.id.toString();
+  const filesKey = `user:${userId}:files`;
 
-  // GET /api/files - List files
-  if (req.method === 'GET') {
-    const files = global.userFiles.get(userId) || [];
-    return res.status(200).json({ files });
-  }
-
-  // POST /api/files - Upload file metadata
-  if (req.method === 'POST') {
-    const fileData = req.body;
-    const files = global.userFiles.get(userId) || [];
-
-    const newFile = {
-      id: `${Date.now()}-${Math.random().toString(36).substring(7)}`,
-      userId: user.id,
-      name: fileData.name,
-      size: fileData.size,
-      originalSize: fileData.originalSize,
-      type: fileData.type,
-      compressed: fileData.compressed,
-      compressionRatio: fileData.compressionRatio,
-      data: fileData.data,
-      thumbnail: fileData.thumbnail,
-      date: new Date().toISOString(),
-      favorite: false,
-    };
-
-    files.push(newFile);
-    global.userFiles.set(userId, files);
-
-    return res.status(201).json({
-      fileId: newFile.id,
-      message: 'File uploaded successfully',
-    });
-  }
-
-  // DELETE /api/files/:id
-  if (req.method === 'DELETE') {
-    const fileId = req.url.split('/').pop();
-    let files = global.userFiles.get(userId) || [];
-    
-    const fileToDelete = files.find(f => f.id === fileId);
-    if (!fileToDelete) {
-      return res.status(404).json({ error: 'File not found' });
+  try {
+    // GET /api/files - List files
+    if (req.method === 'GET') {
+      const files = await kv.get(filesKey) || [];
+      return res.status(200).json({ files });
     }
 
-    files = files.filter(f => f.id !== fileId);
-    global.userFiles.set(userId, files);
+    // POST /api/files - Upload file metadata
+    if (req.method === 'POST') {
+      const fileData = req.body;
+      const files = await kv.get(filesKey) || [];
 
-    return res.status(200).json({ message: 'File deleted successfully' });
+      const newFile = {
+        id: `${Date.now()}-${Math.random().toString(36).substring(7)}`,
+        userId: user.id,
+        name: fileData.name,
+        size: fileData.size,
+        originalSize: fileData.originalSize,
+        type: fileData.type,
+        compressed: fileData.compressed,
+        compressionRatio: fileData.compressionRatio,
+        data: fileData.data,
+        thumbnail: fileData.thumbnail,
+        date: new Date().toISOString(),
+        favorite: false,
+      };
+
+      files.push(newFile);
+      await kv.set(filesKey, files);
+
+      return res.status(201).json({
+        fileId: newFile.id,
+        message: 'File uploaded successfully',
+      });
+    }
+
+    // DELETE /api/files/:id
+    if (req.method === 'DELETE') {
+      const fileId = req.url.split('/').pop();
+      let files = await kv.get(filesKey) || [];
+      
+      const fileToDelete = files.find(f => f.id === fileId);
+      if (!fileToDelete) {
+        return res.status(404).json({ error: 'File not found' });
+      }
+
+      files = files.filter(f => f.id !== fileId);
+      await kv.set(filesKey, files);
+
+      return res.status(200).json({ message: 'File deleted successfully' });
+    }
+
+    return res.status(405).json({ error: 'Method not allowed' });
+  } catch (error) {
+    console.error('KV Error:', error);
+    return res.status(500).json({ error: 'Storage error: ' + error.message });
   }
-
-  return res.status(405).json({ error: 'Method not allowed' });
 }
