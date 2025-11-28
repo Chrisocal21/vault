@@ -5,7 +5,11 @@
   "scripts": {
     "dev": "npx serve . -l 3000",
     "start": "npx serve . -l 3000",
-    "deploy": "wrangler pages deploy . --project-name=oc-vault"
+    "deploy": "wrangler pages deploy . --project-name=oc-vault",
+    "setup-db": "npx wrangler d1 execute oc-vault-db --remote --file=./schema.sql",
+    "db:local": "npx wrangler d1 execute oc-vault-db --local --file=./schema.sql",
+    "db:query": "npx wrangler d1 execute oc-vault-db --remote --command",
+    "wrangler": "wrangler"
   },
   "keywords": [
     "photography",

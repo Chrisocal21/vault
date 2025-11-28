@@ -149,6 +149,67 @@
             border-color: var(--primary);
         }
 
+        /* Login screen */
+        #loginScreen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .login-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 3rem;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: var(--shadow);
+        }
+
+        .login-card h1 {
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .login-card .subtitle {
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-card .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .login-card .btn {
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        #adminPanel {
+            display: none;
+        }
+
+        #adminPanel.authenticated {
+            display: block;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -254,14 +315,43 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🔐 Admin Panel</h1>
-            <a href="index.html" class="btn btn-secondary">← Back to Vault</a>
-        </header>
+    <!-- Login Screen -->
+    <div id="loginScreen">
+        <div class="login-card">
+            <h1>🔐 Admin Login</h1>
+            <p class="subtitle">OC Vault Administration</p>
+            
+            <div class="error-message" id="errorMessage">
+                Invalid credentials. Please try again.
+            </div>
 
-        <!-- Stats -->
-        <div class="stats-grid">
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="loginUsername">Username</label>
+                    <input type="text" id="loginUsername" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn btn-primary">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Panel (hidden until authenticated) -->
+    <div id="adminPanel">
+        <div class="container">
+            <header>
+                <h1>🔐 Admin Panel</h1>
+                <div style="display: flex; gap: 1rem;">
+                    <button onclick="logout()" class="btn btn-danger">Logout</button>
+                    <a href="index.html" class="btn btn-secondary">← Back to Vault</a>
+                </div>
+            </header>
+
+            <!-- Stats -->
+            <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-label">Total Users</div>
                 <div class="stat-value" id="totalUsers">0</div>
@@ -471,9 +561,61 @@
             e.target.reset();
         });
 
-        // Initialize
-        updateStats();
-        renderUsers();
+        // Login functionality
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // Check credentials
+            if (username === 'admin' && password === '321password123') {
+                // Set session
+                sessionStorage.setItem('ocvault_admin_auth', 'true');
+                
+                // Show admin panel
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('adminPanel').classList.add('authenticated');
+                
+                // Clear form
+                document.getElementById('loginForm').reset();
+                document.getElementById('errorMessage').classList.remove('show');
+                
+                // Initialize admin panel
+                updateStats();
+                renderUsers();
+            } else {
+                // Show error
+                document.getElementById('errorMessage').classList.add('show');
+                document.getElementById('loginPassword').value = '';
+                document.getElementById('loginPassword').focus();
+            }
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                sessionStorage.removeItem('ocvault_admin_auth');
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('adminPanel').classList.remove('authenticated');
+                document.getElementById('loginForm').reset();
+            }
+        }
+
+        // Check authentication on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const isAuthenticated = sessionStorage.getItem('ocvault_admin_auth') === 'true';
+            
+            if (isAuthenticated) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('adminPanel').classList.add('authenticated');
+                updateStats();
+                renderUsers();
+            } else {
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('adminPanel').classList.remove('authenticated');
+            }
+        });
     </script>
+    </div>
 </body>
 </html>

@@ -579,6 +579,232 @@
             margin-left: 0.5rem;
         }
         
+        /* Search & Toolbar */
+        .toolbar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.5;
+        }
+        
+        .sort-dropdown {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        
+        /* Checkboxes */
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            margin-right: 0.75rem;
+        }
+        
+        .bulk-actions {
+            display: none;
+            background: var(--primary);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .bulk-actions.active {
+            display: flex;
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            display: none;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .progress-container.active {
+            display: block;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        /* Context Menu */
+        .context-menu {
+            position: fixed;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            padding: 0.5rem 0;
+            display: none;
+            z-index: 3000;
+            min-width: 180px;
+        }
+        
+        .context-menu.active {
+            display: block;
+        }
+        
+        .context-menu-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .context-menu-item:hover {
+            background: var(--bg-tertiary);
+        }
+        
+        .context-menu-item.danger:hover {
+            background: var(--danger);
+            color: white;
+        }
+        
+        /* Favorite Star */
+        .favorite-star {
+            cursor: pointer;
+            font-size: 1.25rem;
+            margin-left: 0.5rem;
+            transition: transform 0.2s;
+        }
+        
+        .favorite-star:hover {
+            transform: scale(1.2);
+        }
+        
+        .favorite-star.active {
+            color: #fbbf24;
+        }
+        
+        /* Recent Files */
+        .recent-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .recent-section h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .recent-files {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+        
+        .recent-file {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .recent-file:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        /* Storage Bar */
+        .storage-bar-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .storage-bar {
+            width: 100%;
+            height: 12px;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+        
+        .storage-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success), var(--primary));
+            transition: width 0.3s ease;
+        }
+        
+        .storage-bar-fill.warning {
+            background: linear-gradient(90deg, var(--warning), var(--danger));
+        }
+        
+        /* Dragging */
+        .dragging {
+            opacity: 0.5;
+        }
+        
+        .drag-over {
+            border: 2px dashed var(--primary) !important;
+            background: var(--bg-tertiary) !important;
+        }
+        
         /* Footer */
         footer {
             background: var(--bg-secondary);
@@ -720,6 +946,23 @@
             <ul class="nav-links">
                 <li><a href="#files">My Files</a></li>
                 <li><a href="admin.html" id="adminLink">Admin Panel</a></li>
+                <li class="storage-mode-toggle">
+                    <label for="storageMode">💾 Storage:</label>
+                    <select id="storageMode" class="storage-mode-select" onchange="switchStorageMode()">
+                        <option value="local">Local</option>
+                        <option value="cloud">Cloud (D1/R2)</option>
+                    </select>
+                </li>
+                <li id="loginButton" style="display: none;">
+                    <button class="theme-toggle" onclick="showLoginModal()" aria-label="Login">
+                        <span>🔐</span>
+                    </button>
+                </li>
+                <li id="logoutButton" style="display: none;">
+                    <button class="theme-toggle" onclick="logout()" aria-label="Logout">
+                        <span>👤</span>
+                    </button>
+                </li>
                 <li>
                     <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
                         <span id="themeIcon">☀️</span>
@@ -733,8 +976,8 @@
     <div class="app-container" id="app">
         <!-- Vault Header -->
         <div class="vault-header">
-            <h1>My Vault</h1>
-            <p>Securely store and manage your files, photos, videos, and folders</p>
+            <h1>My Vault <span class="storage-mode-badge local" id="storageBadge">📱 Local Storage</span></h1>
+            <p id="vaultDescription">Securely store and manage your files, photos, videos, and folders in your browser</p>
         </div>
 
         <!-- Stats -->
@@ -757,6 +1000,37 @@
             </div>
         </div>
 
+        <!-- Storage Usage Bar -->
+        <div class="storage-bar-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <span style="font-weight: 600;">💾 Storage Usage</span>
+                <span id="storagePercent">0%</span>
+            </div>
+            <div class="storage-bar">
+                <div class="storage-bar-fill" id="storageBarFill" style="width: 0%"></div>
+            </div>
+            <div style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                <span id="storageUsed">0 MB</span> of <span id="storageLimit">1000 MB</span> used
+            </div>
+        </div>
+
+        <!-- Recent Files -->
+        <div class="recent-section" id="recentSection" style="display: none;">
+            <h2>⚡ Recent Files</h2>
+            <div class="recent-files" id="recentFiles"></div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container" id="progressContainer">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span id="progressText">Uploading...</span>
+                <span id="progressPercent">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
         <!-- Upload Section -->
         <section class="upload-section" id="uploadSection">
             <div class="upload-icon">☁️</div>
@@ -770,10 +1044,40 @@
             <input type="file" id="folderInput" class="file-input" webkitdirectory directory multiple>
         </section>
 
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Search files..." autocomplete="off">
+            </div>
+            <select class="sort-dropdown" id="sortSelect">
+                <option value="date-desc">📅 Newest First</option>
+                <option value="date-asc">📅 Oldest First</option>
+                <option value="name-asc">🔤 Name A-Z</option>
+                <option value="name-desc">🔤 Name Z-A</option>
+                <option value="size-desc">📊 Largest First</option>
+                <option value="size-asc">📊 Smallest First</option>
+                <option value="type">📑 Group by Type</option>
+            </select>
+            <button class="btn btn-secondary" onclick="exportAll()" title="Download all files as ZIP">📦 Export All</button>
+            <button class="btn btn-secondary" onclick="clearAll()" title="Delete all files">🗑️ Clear All</button>
+        </div>
+
+        <!-- Bulk Actions -->
+        <div class="bulk-actions" id="bulkActions">
+            <span id="bulkCount">0 selected</span>
+            <button class="btn btn-secondary" onclick="bulkDownload()">⬇️ Download</button>
+            <button class="btn btn-secondary" onclick="bulkDelete()">🗑️ Delete</button>
+            <button class="btn btn-secondary" onclick="deselectAll()">✕ Deselect All</button>
+        </div>
+
         <!-- Files Section -->
         <section class="files-section" id="files">
             <div class="files-header">
-                <h2>My Files</h2>
+                <h2>
+                    <input type="checkbox" class="checkbox" id="selectAll" title="Select all">
+                    My Files
+                </h2>
                 <div class="view-toggle">
                     <button class="view-btn active" data-view="list">📄 List</button>
                     <button class="view-btn" data-view="grid">⊞ Grid</button>
@@ -798,20 +1102,123 @@
         </section>
     </div>
 
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 400px; padding: 2rem;">
+            <span class="modal-close" onclick="closeLoginModal()">&times;</span>
+            <h2 style="margin-bottom: 1.5rem;">🔐 Cloud Login</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Login to access cloud storage</p>
+            
+            <div id="loginError" style="display: none; background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger); color: var(--danger); padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem;"></div>
+            
+            <form onsubmit="handleCloudLogin(event)" style="display: flex; flex-direction: column; gap: 1rem;">
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Username</label>
+                    <input type="text" id="cloudUsername" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-tertiary); color: var(--text-primary);">
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Password</label>
+                    <input type="password" id="cloudPassword" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-tertiary); color: var(--text-primary);">
+                </div>
+                <button type="submit" style="padding: 0.75rem; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Sign In</button>
+            </form>
+            
+            <p style="margin-top: 1rem; font-size: 0.875rem; color: var(--text-secondary); text-align: center;">Default: admin / 321password123</p>
+        </div>
+    </div>
+
+    <!-- Context Menu -->
+    <div class="context-menu" id="contextMenu">
+        <div class="context-menu-item" onclick="contextMenuAction('view')">👁️ View</div>
+        <div class="context-menu-item" onclick="contextMenuAction('download')">⬇️ Download</div>
+        <div class="context-menu-item" onclick="contextMenuAction('share')">🔗 Share Link</div>
+        <div class="context-menu-item" onclick="contextMenuAction('favorite')">⭐ Toggle Favorite</div>
+        <div class="context-menu-item danger" onclick="contextMenuAction('delete')">🗑️ Delete</div>
+    </div>
+
     <!-- Footer -->
     <footer>
         <div class="footer-content">
             <p>&copy; 2025 OC Vault - Secure Personal Storage</p>
             <p>Built with Cloudflare • <a href="https://github.com" target="_blank">View on GitHub</a></p>
+            <p style="margin-top: 0.5rem; font-size: 0.75rem; opacity: 0.7;">
+                ⌨️ Shortcuts: Del=Delete • Space=Preview • Ctrl+A=Select All • Esc=Close
+            </p>
         </div>
     </footer>
 
     <script>
-        // File storage using localStorage (simulated - replace with backend)
-        let files = JSON.parse(localStorage.getItem('ocvault_files')) || [];
+        // Storage mode and API configuration
+        let storageMode = localStorage.getItem('ocvault_storage_mode') || 'local';
+        let files = [];
         let currentView = 'list';
-
-        // Theme Toggle
+        let filteredFiles = [];
+        let currentSort = 'date-desc';
+        let searchQuery = '';
+        let contextMenuFileId = null;
+        let draggedElement = null;
+        const STORAGE_LIMIT = 5368709120; // 5GB in bytes
+        const API_BASE = '/api'; // Cloudflare Pages Functions API endpoint
+        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        
+        // Load files based on storage mode
+        async function loadFiles() {
+            if (storageMode === 'local') {
+                files = JSON.parse(localStorage.getItem('ocvault_files') || '[]');
+            } else {
+                // Load from cloud (D1)
+                try {
+                    const token = localStorage.getItem('ocvault_token');
+                    if (!token) {
+                        console.log('No auth token, using local storage');
+                        storageMode = 'local';
+                        localStorage.setItem('ocvault_storage_mode', 'local');
+                        files = JSON.parse(localStorage.getItem('ocvault_files') || '[]');
+                        return;
+                    }
+                    
+                    const response = await fetch(`${API_BASE}/files`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        files = data.files || [];
+                    } else {
+                        console.error('Failed to load files from cloud');
+                        files = [];
+                    }
+                } catch (error) {
+                    console.error('Cloud storage error:', error);
+                    alert('⚠️ Cloud storage unavailable. Switching to local mode.');
+                    storageMode = 'local';
+                    localStorage.setItem('ocvault_storage_mode', 'local');
+                    document.getElementById('storageMode').value = 'local';
+                    files = JSON.parse(localStorage.getItem('ocvault_files') || '[]');
+                }
+            }
+        }
+        
+        // Update storage mode UI indicators
+        function updateStorageModeUI() {
+            const badge = document.getElementById('storageBadge');
+            const description = document.getElementById('vaultDescription');
+            const select = document.getElementById('storageMode');
+            
+            if (storageMode === 'cloud') {
+                badge.className = 'storage-mode-badge cloud';
+                badge.innerHTML = '☁️ Cloud Storage';
+                description.textContent = 'Securely store and manage your files in Cloudflare D1 & R2';
+            } else {
+                badge.className = 'storage-mode-badge local';
+                badge.innerHTML = '📱 Local Storage';
+                description.textContent = 'Securely store and manage your files, photos, videos, and folders in your browser';
+            }
+            
+            select.value = storageMode;
+        }        // Theme Toggle
         const themeToggle = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
         const currentTheme = localStorage.getItem('theme') || 'dark';
@@ -911,26 +1318,196 @@
             }
 
             console.log('Processed files:', processedFiles);
-            files = [...files, ...processedFiles];
-            saveFiles();
+            
+            // Save to appropriate storage
+            let uploadSuccess = false;
+            
+            if (storageMode === 'cloud') {
+                // Upload to cloud storage
+                const token = localStorage.getItem('ocvault_token');
+                if (!token) {
+                    alert('⚠️ Not authenticated. Please login to upload to cloud storage.\n\nSwitching to local storage.');
+                    storageMode = 'local';
+                    localStorage.setItem('ocvault_storage_mode', 'local');
+                    document.getElementById('storageMode').value = 'local';
+                    updateStorageModeUI();
+                } else {
+                    try {
+                        // Upload file metadata to D1 (actual files would go to R2)
+                        for (const fileData of processedFiles) {
+                            const response = await fetch(`${API_BASE}/files`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${token}`
+                                },
+                                body: JSON.stringify({
+                                    name: fileData.name,
+                                    originalName: fileData.name,
+                                    size: fileData.size,
+                                    originalSize: fileData.originalSize,
+                                    type: fileData.type,
+                                    path: `uploads/${fileData.id}/${fileData.name}`, // R2 path
+                                    thumbnailPath: fileData.thumbnail ? `thumbnails/${fileData.id}.jpg` : null,
+                                    compressed: fileData.compressed
+                                })
+                            });
+                            
+                            if (!response.ok) {
+                                console.error('Failed to upload file to cloud:', fileData.name);
+                                throw new Error('Cloud upload failed');
+                            }
+                        }
+                        
+                        uploadSuccess = true;
+                        // Reload files from cloud
+                        await loadFiles();
+                    } catch (error) {
+                        console.error('Cloud upload error:', error);
+                        const message = isLocalhost 
+                            ? '⚠️ Cloud API not available on localhost.\n\nFiles will be saved locally. Deploy to Cloudflare Pages to use real cloud storage.'
+                            : '⚠️ Cloud upload failed. Saving locally instead.';
+                        alert(message);
+                        storageMode = 'local';
+                        localStorage.setItem('ocvault_storage_mode', 'local');
+                        document.getElementById('storageMode').value = 'local';
+                        updateStorageModeUI();
+                    }
+                }
+            }
+            
+            // Save locally if in local mode or if cloud upload failed
+            if (storageMode === 'local') {
+                files = [...files, ...processedFiles];
+                saveFiles();
+                uploadSuccess = true;
+            }
+            
             renderFiles();
             updateStats();
             
-            const totalSaved = processedFiles.reduce((sum, f) => sum + (f.originalSize - f.size), 0);
-            const savedPercent = totalSaved > 0 ? Math.round((totalSaved / processedFiles.reduce((sum, f) => sum + f.originalSize, 0)) * 100) : 0;
-            
-            // Show confirmation
-            alert(`Successfully uploaded ${processedFiles.length} file(s)!\n${savedPercent > 0 ? `Saved ${formatBytes(totalSaved)} (${savedPercent}% compression) 🗜️` : ''}`);
+            if (uploadSuccess) {
+                const totalSaved = processedFiles.reduce((sum, f) => sum + (f.originalSize - f.size), 0);
+                const savedPercent = totalSaved > 0 ? Math.round((totalSaved / processedFiles.reduce((sum, f) => sum + f.originalSize, 0)) * 100) : 0;
+                
+                // Show confirmation
+                const storageLabel = storageMode === 'cloud' ? '☁️ Cloud' : '📱 Local';
+                alert(`Successfully uploaded ${processedFiles.length} file(s) to ${storageLabel} storage!\n${savedPercent > 0 ? `Saved ${formatBytes(totalSaved)} (${savedPercent}% compression) 🗜️` : ''}`);
+            }
+        }
+
+        // Storage mode management
+        async function loadFiles() {
+            if (storageMode === 'local') {
+                files = JSON.parse(localStorage.getItem('ocvault_files') || '[]');
+            } else {
+                // Load from cloud (D1)
+                try {
+                    const response = await fetch(`${API_BASE}/files`, {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('ocvault_token')}`
+                        }
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        files = data.files || [];
+                    } else {
+                        console.error('Failed to load files from cloud');
+                        files = [];
+                    }
+                } catch (error) {
+                    console.error('Cloud storage error:', error);
+                    alert('⚠️ Cloud storage unavailable. Switching to local mode.');
+                    storageMode = 'local';
+                    localStorage.setItem('ocvault_storage_mode', 'local');
+                    document.getElementById('storageMode').value = 'local';
+                    files = JSON.parse(localStorage.getItem('ocvault_files') || '[]');
+                }
+            }
         }
 
         function saveFiles() {
-            localStorage.setItem('ocvault_files', JSON.stringify(files));
+            if (storageMode === 'local') {
+                localStorage.setItem('ocvault_files', JSON.stringify(files));
+            }
+            // Cloud saves happen via API calls in individual operations
         }
 
-        function deleteFile(id) {
+        async function switchStorageMode() {
+            const newMode = document.getElementById('storageMode').value;
+            
+            // Warn about localhost limitations
+            if (newMode === 'cloud' && isLocalhost) {
+                alert('⚠️ Cloud Mode on Localhost\n\nCloud API is not available when running locally with npm/serve.\n\nTo test cloud features:\n1. Deploy to Cloudflare Pages, OR\n2. Use: npx wrangler pages dev .\n\nFor now, cloud mode will use local authentication only.');
+            }
+            
+            if (newMode === 'cloud' && !localStorage.getItem('ocvault_token')) {
+                const shouldLogin = confirm('⚠️ Cloud storage requires authentication.\n\nWould you like to login now?');
+                if (shouldLogin) {
+                    showLoginModal();
+                } else {
+                    document.getElementById('storageMode').value = 'local';
+                }
+                return;
+            }
+            
+            const currentFileCount = files.length;
+            
+            if (currentFileCount > 0 && newMode !== storageMode) {
+                const confirmed = confirm(
+                    `Switch from ${storageMode} to ${newMode} storage?\n\n` +
+                    `You have ${currentFileCount} file(s) in ${storageMode} storage.\n\n` +
+                    `Note: Files are not automatically migrated between storage modes.`
+                );
+                
+                if (!confirmed) {
+                    document.getElementById('storageMode').value = storageMode;
+                    return;
+                }
+            }
+            
+            storageMode = newMode;
+            localStorage.setItem('ocvault_storage_mode', newMode);
+            
+            // Update UI
+            updateStorageModeUI();
+            
+            // Reload files from new storage
+            await loadFiles();
+            renderFiles();
+            updateStats();
+            
+            console.log(`Switched to ${newMode} storage mode`);
+        }
+
+        async function deleteFile(id) {
             if (confirm('Are you sure you want to delete this file?')) {
-                files = files.filter(f => f.id !== id);
-                saveFiles();
+                if (storageMode === 'cloud') {
+                    try {
+                        const token = localStorage.getItem('ocvault_token');
+                        const response = await fetch(`${API_BASE}/files/${id}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            }
+                        });
+                        
+                        if (response.ok) {
+                            await loadFiles();
+                        } else {
+                            alert('⚠️ Failed to delete file from cloud storage');
+                            return;
+                        }
+                    } catch (error) {
+                        console.error('Cloud delete error:', error);
+                        alert('⚠️ Failed to delete file from cloud storage');
+                        return;
+                    }
+                } else {
+                    files = files.filter(f => f.id !== id);
+                    saveFiles();
+                }
+                
                 renderFiles();
                 updateStats();
             }
@@ -968,11 +1545,17 @@
         }
 
         function renderFiles() {
-            if (files.length === 0) {
+            // Apply search and sort
+            filteredFiles = files.filter(file => 
+                file.name.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+            sortFiles();
+            
+            if (filteredFiles.length === 0) {
                 filesList.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-state-icon">📁</div>
-                        <p>No files uploaded yet. Upload some files to get started!</p>
+                        <p>${files.length === 0 ? 'No files uploaded yet. Upload some files to get started!' : 'No files match your search.'}</p>
                     </div>
                 `;
                 filesGrid.innerHTML = filesList.innerHTML;
@@ -980,17 +1563,22 @@
             }
 
             // List view
-            filesList.innerHTML = files.map(file => {
+            filesList.innerHTML = filteredFiles.map(file => {
                 const isMedia = file.type.startsWith('image/') || file.type.startsWith('video/');
                 const compressionSaved = file.originalSize ? Math.round((1 - file.size / file.originalSize) * 100) : 0;
                 return `
-                <div class="file-item" ${isMedia ? `onclick="viewMedia(${file.id})" style="cursor: pointer;"` : ''}>
-                    <div style="display: flex; align-items: flex-start; flex: 1; min-width: 0; gap: 0.75rem;">
+                <div class="file-item" data-id="${file.id}" draggable="true" 
+                     oncontextmenu="showContextMenu(event, ${file.id}); return false;"
+                     ondragstart="handleDragStart(event)" ondragover="handleDragOver(event)" 
+                     ondrop="handleDrop(event)" ondragend="handleDragEnd(event)">
+                    <input type="checkbox" class="checkbox file-checkbox" data-id="${file.id}" onclick="event.stopPropagation(); updateBulkActions()">
+                    <div style="display: flex; align-items: flex-start; flex: 1; min-width: 0; gap: 0.75rem;" onclick="${isMedia ? `viewMedia(${file.id})` : ''}" style="cursor: ${isMedia ? 'pointer' : 'default'};">
                         <div class="file-icon">${getFileIcon(file.type)}</div>
                         <div class="file-info">
                             <div class="file-name">
                                 ${file.name}
                                 ${file.compressed ? `<span class="compression-badge">-${compressionSaved}% 🗜️</span>` : ''}
+                                <span class="favorite-star ${file.favorite ? 'active' : ''}" onclick="event.stopPropagation(); toggleFavorite(${file.id})" title="Toggle favorite">${file.favorite ? '⭐' : '☆'}</span>
                             </div>
                             <div class="file-meta">
                                 ${formatBytes(file.size)}
@@ -1002,6 +1590,7 @@
                     </div>
                     <div class="file-actions">
                         ${isMedia ? `<button class="action-btn" onclick="event.stopPropagation(); viewMedia(${file.id})">👁️ View</button>` : ''}
+                        <button class="action-btn" onclick="event.stopPropagation(); shareFile(${file.id})">🔗 Share</button>
                         <button class="action-btn" onclick="event.stopPropagation(); downloadFile(${file.id})">⬇ Download</button>
                         <button class="action-btn danger" onclick="event.stopPropagation(); deleteFile(${file.id})">🗑️ Delete</button>
                     </div>
@@ -1009,7 +1598,7 @@
             `}).join('');
 
             // Grid view
-            filesGrid.innerHTML = files.map(file => {
+            filesGrid.innerHTML = filteredFiles.map(file => {
                 const isMedia = file.type.startsWith('image/') || file.type.startsWith('video/');
                 const compressionSaved = file.originalSize ? Math.round((1 - file.size / file.originalSize) * 100) : 0;
                 return `
@@ -1044,6 +1633,9 @@
             document.getElementById('totalStorage').textContent = formatBytes(totalSize);
             document.getElementById('mediaCount').textContent = mediaCount;
             document.getElementById('docCount').textContent = docCount;
+            
+            updateStorageBar();
+            updateRecentFiles();
         }
 
         // View Toggle
@@ -1214,6 +1806,130 @@
             document.onkeydown = null;
         }
         
+        // Login/Logout functions
+        function showLoginModal() {
+            document.getElementById('loginModal').style.display = 'flex';
+            document.getElementById('cloudUsername').focus();
+        }
+        
+        function closeLoginModal() {
+            document.getElementById('loginModal').style.display = 'none';
+            document.getElementById('cloudUsername').value = '';
+            document.getElementById('cloudPassword').value = '';
+            document.getElementById('loginError').style.display = 'none';
+        }
+        
+        async function handleCloudLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('cloudUsername').value;
+            const password = document.getElementById('cloudPassword').value;
+            const errorDiv = document.getElementById('loginError');
+            
+            console.log('Login attempt:', username, password.length + ' chars');
+            
+            // Hide error initially
+            errorDiv.style.display = 'none';
+            
+            // Local fallback authentication (for testing before backend is deployed)
+            if (username.trim() === 'admin' && password === '321password123') {
+                console.log('Local auth successful');
+                const mockToken = 'mock_token_' + Date.now();
+                const mockUser = {
+                    id: 1,
+                    username: 'admin',
+                    email: 'admin@ocvault.com',
+                    role: 'admin',
+                    storage_quota: 53687091200,
+                    storage_used: 0
+                };
+                
+                localStorage.setItem('ocvault_token', mockToken);
+                localStorage.setItem('ocvault_user', JSON.stringify(mockUser));
+                
+                closeLoginModal();
+                updateAuthUI();
+                
+                alert(`✅ Logged in as ${mockUser.username}\n\n⚠️ Using local authentication (Cloud API not deployed yet)\n\nYou can now switch to cloud mode, but files will still be stored locally until the backend is deployed.`);
+                
+                return;
+            }
+            
+            console.log('Local auth failed, checking credentials...');
+            
+            // Try cloud API authentication
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    localStorage.setItem('ocvault_token', data.token);
+                    localStorage.setItem('ocvault_user', JSON.stringify(data.user));
+                    
+                    closeLoginModal();
+                    updateAuthUI();
+                    
+                    alert(`✅ Logged in as ${data.user.username}\n\nYou can now use cloud storage!`);
+                    
+                    // If in cloud mode, reload files
+                    if (storageMode === 'cloud') {
+                        await loadFiles();
+                        renderFiles();
+                        updateStats();
+                    }
+                } else {
+                    errorDiv.textContent = 'Invalid username or password';
+                    errorDiv.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                errorDiv.textContent = 'Invalid username or password';
+                errorDiv.style.display = 'block';
+            }
+        }
+        
+        function logout() {
+            if (confirm('Logout from cloud storage?')) {
+                localStorage.removeItem('ocvault_token');
+                localStorage.removeItem('ocvault_user');
+                
+                // Switch to local mode
+                storageMode = 'local';
+                localStorage.setItem('ocvault_storage_mode', 'local');
+                document.getElementById('storageMode').value = 'local';
+                updateStorageModeUI();
+                updateAuthUI();
+                
+                // Reload local files
+                loadFiles().then(() => {
+                    renderFiles();
+                    updateStats();
+                });
+                
+                alert('✅ Logged out successfully. Switched to local storage.');
+            }
+        }
+        
+        function updateAuthUI() {
+            const token = localStorage.getItem('ocvault_token');
+            const loginBtn = document.getElementById('loginButton');
+            const logoutBtn = document.getElementById('logoutButton');
+            
+            if (token) {
+                loginBtn.style.display = 'none';
+                logoutBtn.style.display = 'block';
+            } else {
+                loginBtn.style.display = 'block';
+                logoutBtn.style.display = 'none';
+            }
+        }
+        
         function navigateMedia(direction) {
             currentMediaIndex += direction;
             if (currentMediaIndex < 0) currentMediaIndex = mediaFiles.length - 1;
@@ -1221,16 +1937,309 @@
             showMediaModal(mediaFiles[currentMediaIndex]);
         }
         
+        // Sort files
+        function sortFiles() {
+            const [field, order] = currentSort.split('-');
+            filteredFiles.sort((a, b) => {
+                let aVal, bVal;
+                switch(field) {
+                    case 'date':
+                        aVal = new Date(a.date);
+                        bVal = new Date(b.date);
+                        break;
+                    case 'name':
+                        aVal = a.name.toLowerCase();
+                        bVal = b.name.toLowerCase();
+                        break;
+                    case 'size':
+                        aVal = a.size;
+                        bVal = b.size;
+                        break;
+                    case 'type':
+                        aVal = a.type;
+                        bVal = b.type;
+                        break;
+                }
+                if (order === 'asc') return aVal > bVal ? 1 : -1;
+                return aVal < bVal ? 1 : -1;
+            });
+            
+            // Favorites always on top
+            filteredFiles.sort((a, b) => b.favorite ? 1 : a.favorite ? -1 : 0);
+        }
+        
+        // Search functionality
+        document.getElementById('searchInput')?.addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            renderFiles();
+        });
+        
+        // Sort functionality
+        document.getElementById('sortSelect')?.addEventListener('change', (e) => {
+            currentSort = e.target.value;
+            renderFiles();
+        });
+        
+        // Select all checkbox
+        document.getElementById('selectAll')?.addEventListener('change', (e) => {
+            document.querySelectorAll('.file-checkbox').forEach(cb => {
+                cb.checked = e.target.checked;
+            });
+            updateBulkActions();
+        });
+        
+        // Bulk actions
+        function updateBulkActions() {
+            const selected = document.querySelectorAll('.file-checkbox:checked');
+            const bulkActions = document.getElementById('bulkActions');
+            const bulkCount = document.getElementById('bulkCount');
+            if (selected.length > 0) {
+                bulkActions.classList.add('active');
+                bulkCount.textContent = `${selected.length} selected`;
+            } else {
+                bulkActions.classList.remove('active');
+            }
+        }
+        
+        function bulkDownload() {
+            const selected = Array.from(document.querySelectorAll('.file-checkbox:checked'));
+            const fileIds = selected.map(cb => parseInt(cb.dataset.id));
+            fileIds.forEach(id => downloadFile(id));
+        }
+        
+        function bulkDelete() {
+            const selected = Array.from(document.querySelectorAll('.file-checkbox:checked'));
+            const fileIds = selected.map(cb => parseInt(cb.dataset.id));
+            if (confirm(`Delete ${fileIds.length} file(s)?`)) {
+                files = files.filter(f => !fileIds.includes(f.id));
+                saveFiles();
+                renderFiles();
+                updateStats();
+                deselectAll();
+            }
+        }
+        
+        function deselectAll() {
+            document.querySelectorAll('.file-checkbox').forEach(cb => cb.checked = false);
+            document.getElementById('selectAll').checked = false;
+            updateBulkActions();
+        }
+        
+        // Toggle favorite
+        function toggleFavorite(id) {
+            const file = files.find(f => f.id === id);
+            if (file) {
+                file.favorite = !file.favorite;
+                saveFiles();
+                renderFiles();
+            }
+        }
+        
+        // Share file
+        function shareFile(id) {
+            const file = files.find(f => f.id === id);
+            if (!file) return;
+            
+            // Generate shareable link (in production, this would be a real URL)
+            const shareUrl = `${window.location.origin}/?file=${id}`;
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                alert(`📋 Share link copied to clipboard!\n\n${file.name}\n${shareUrl}\n\n(In production, this would be a time-limited secure link)`);
+            }).catch(() => {
+                prompt('Copy this link:', shareUrl);
+            });
+        }
+        
+        // Export all files
+        function exportAll() {
+            if (files.length === 0) {
+                alert('No files to export!');
+                return;
+            }
+            alert(`📦 Export All\n\nThis would download all ${files.length} file(s) as a ZIP archive.\n\n(Requires backend implementation with ZIP library)`);
+        }
+        
+        // Clear all files
+        function clearAll() {
+            if (files.length === 0) return;
+            if (confirm(`⚠️ Delete ALL ${files.length} file(s)?\n\nThis action cannot be undone!`)) {
+                files = [];
+                saveFiles();
+                renderFiles();
+                updateStats();
+                updateStorageBar();
+            }
+        }
+        
+        // Context menu
+        function showContextMenu(event, fileId) {
+            event.preventDefault();
+            contextMenuFileId = fileId;
+            const menu = document.getElementById('contextMenu');
+            menu.style.left = event.pageX + 'px';
+            menu.style.top = event.pageY + 'px';
+            menu.classList.add('active');
+            
+            // Close on any click
+            setTimeout(() => {
+                document.addEventListener('click', () => {
+                    menu.classList.remove('active');
+                }, { once: true });
+            }, 100);
+        }
+        
+        function contextMenuAction(action) {
+            if (!contextMenuFileId) return;
+            switch(action) {
+                case 'view':
+                    viewMedia(contextMenuFileId);
+                    break;
+                case 'download':
+                    downloadFile(contextMenuFileId);
+                    break;
+                case 'share':
+                    shareFile(contextMenuFileId);
+                    break;
+                case 'favorite':
+                    toggleFavorite(contextMenuFileId);
+                    break;
+                case 'delete':
+                    deleteFile(contextMenuFileId);
+                    break;
+            }
+            document.getElementById('contextMenu').classList.remove('active');
+        }
+        
+        // Drag and drop reordering
+        function handleDragStart(e) {
+            draggedElement = e.target;
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+        
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            const target = e.target.closest('.file-item');
+            if (target && target !== draggedElement) {
+                target.classList.add('drag-over');
+            }
+        }
+        
+        function handleDrop(e) {
+            e.preventDefault();
+            const target = e.target.closest('.file-item');
+            if (target && draggedElement && target !== draggedElement) {
+                const draggedId = parseInt(draggedElement.dataset.id);
+                const targetId = parseInt(target.dataset.id);
+                
+                const draggedIndex = files.findIndex(f => f.id === draggedId);
+                const targetIndex = files.findIndex(f => f.id === targetId);
+                
+                // Swap positions
+                [files[draggedIndex], files[targetIndex]] = [files[targetIndex], files[draggedIndex]];
+                saveFiles();
+                renderFiles();
+            }
+            document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+        }
+        
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+            document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+        }
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Ignore if typing in input
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            
+            switch(e.key) {
+                case 'Delete':
+                    const selected = document.querySelectorAll('.file-checkbox:checked');
+                    if (selected.length > 0) bulkDelete();
+                    break;
+                case ' ':
+                    e.preventDefault();
+                    const firstMedia = files.find(f => f.type.startsWith('image/') || f.type.startsWith('video/'));
+                    if (firstMedia) viewMedia(firstMedia.id);
+                    break;
+                case 'a':
+                case 'A':
+                    if (e.ctrlKey || e.metaKey) {
+                        e.preventDefault();
+                        document.getElementById('selectAll').checked = true;
+                        document.querySelectorAll('.file-checkbox').forEach(cb => cb.checked = true);
+                        updateBulkActions();
+                    }
+                    break;
+                case 'Escape':
+                    closeMediaModal();
+                    deselectAll();
+                    document.getElementById('contextMenu').classList.remove('active');
+                    break;
+            }
+        });
+        
+        // Update storage bar
+        function updateStorageBar() {
+            const totalUsed = files.reduce((sum, f) => sum + f.size, 0);
+            const percent = Math.min((totalUsed / STORAGE_LIMIT) * 100, 100);
+            const barFill = document.getElementById('storageBarFill');
+            
+            barFill.style.width = percent + '%';
+            if (percent > 90) barFill.classList.add('warning');
+            else barFill.classList.remove('warning');
+            
+            document.getElementById('storagePercent').textContent = percent.toFixed(1) + '%';
+            document.getElementById('storageUsed').textContent = formatBytes(totalUsed);
+            document.getElementById('storageLimit').textContent = formatBytes(STORAGE_LIMIT);
+        }
+        
+        // Update recent files
+        function updateRecentFiles() {
+            const recentSection = document.getElementById('recentSection');
+            const recentFilesDiv = document.getElementById('recentFiles');
+            const recentFiles = files.slice().sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+            
+            if (recentFiles.length === 0) {
+                recentSection.style.display = 'none';
+                return;
+            }
+            
+            recentSection.style.display = 'block';
+            recentFilesDiv.innerHTML = recentFiles.map(file => `
+                <div class="recent-file" onclick="${(file.type.startsWith('image/') || file.type.startsWith('video/')) ? `viewMedia(${file.id})` : `downloadFile(${file.id})`}">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">${getFileIcon(file.type)}</div>
+                    <div style="font-size: 0.875rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${file.name}">${file.name}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">${formatBytes(file.size)}</div>
+                </div>
+            `).join('');
+        }
+        
         // Initialize
-        console.log('Initializing OC Vault...');
-        console.log('Current files:', files);
-        renderFiles();
-        updateStats();
-
-        // Test button functionality
-        console.log('File input element:', fileInput);
-        console.log('Folder input element:', folderInput);
-        console.log('Upload section element:', uploadSection);
+        async function init() {
+            console.log('Initializing OC Vault...');
+            console.log('Storage mode:', storageMode);
+            
+            // Load files from current storage mode
+            await loadFiles();
+            
+            // Update UI
+            updateStorageModeUI();
+            updateAuthUI();
+            renderFiles();
+            updateStats();
+            
+            console.log('Current files:', files);
+            console.log('File input element:', fileInput);
+            console.log('Folder input element:', folderInput);
+            console.log('Upload section element:', uploadSection);
+            console.log('OC Vault initialized successfully!');
+        }
+        
+        init();
 
         // Header scroll effect
         const header = document.getElementById('header');

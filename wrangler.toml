@@ -1,12 +1,21 @@
 # Cloudflare Pages Configuration
 # https://developers.cloudflare.com/pages/platform/build-configuration/
 
+name = "oc-vault"
+compatibility_date = "2024-11-27"
+
 [build]
   command = ""
   publish = "."
 
 [build.environment]
   NODE_VERSION = "18"
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "oc-vault-db"
+database_id = "e5284918-6980-4bfa-8059-c05a3ce6c5fd"
 
 # Headers for security and performance
 [[headers]]
