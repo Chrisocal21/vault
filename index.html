@@ -1609,15 +1609,35 @@
                 return;
             }
             
-            // Create download link from stored data
+            // Mobile-friendly download
             console.log('Creating download link...');
-            const link = document.createElement('a');
-            link.href = file.data;
-            link.download = file.name;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            console.log('Download initiated for:', file.name);
+            
+            // Convert data URL to blob for better mobile support
+            try {
+                fetch(file.data)
+                    .then(res => res.blob())
+                    .then(blob => {
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = file.name;
+                        link.style.display = 'none';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        
+                        // Clean up blob URL after a delay
+                        setTimeout(() => URL.revokeObjectURL(url), 1000);
+                        console.log('Download initiated for:', file.name);
+                    })
+                    .catch(err => {
+                        console.error('Download error:', err);
+                        alert('⚠️ Download failed. Please try again.');
+                    });
+            } catch (err) {
+                console.error('Download error:', err);
+                alert('⚠️ Download failed. Please try again.');
+            }
         }
 
         function getFileIcon(type) {
