@@ -1613,7 +1613,6 @@
             
             try {
                 const isMobile = /iPad|iPhone|iPod|Android/i.test(navigator.userAgent);
-                const isIOS = /iPad|iPhone|iPod/i.test(navigator.userAgent);
                 const isMedia = file.type.startsWith('image/') || file.type.startsWith('video/');
                 
                 // Fetch and convert to blob with proper MIME type
@@ -1621,33 +1620,25 @@
                 const blob = await response.blob();
                 const typedBlob = new Blob([blob], { type: file.type });
                 
-                if (isMobile && isMedia && isIOS) {
-                    // iOS Photos/Videos: Open in new window with share option
-                    const url = URL.createObjectURL(typedBlob);
-                    const newWindow = window.open(url, '_blank');
-                    if (!newWindow) {
-                        alert('📱 Please allow popups to save to Photos');
-                    }
-                    setTimeout(() => URL.revokeObjectURL(url), 5000);
-                } else if (isMobile && 'share' in navigator && isMedia) {
-                    // Use Web Share API for mobile (works on Android)
+                // Try Web Share API first (works on iOS 13+ and Android)
+                if (isMobile && isMedia && navigator.share && navigator.canShare) {
                     try {
                         const fileToShare = new File([typedBlob], file.name, { type: file.type });
-                        await navigator.share({
-                            files: [fileToShare],
-                            title: file.name,
-                            text: `Download ${file.name}`
-                        });
-                        console.log('Shared successfully');
+                        const shareData = { files: [fileToShare] };
+                        
+                        if (navigator.canShare(shareData)) {
+                            await navigator.share(shareData);
+                            console.log('Shared successfully via Web Share API');
+                            return;
+                        }
                     } catch (shareError) {
-                        console.log('Share failed, trying download:', shareError);
-                        // Fallback to regular download
-                        downloadViaLink(typedBlob, file.name);
+                        console.log('Share API failed, using download fallback:', shareError);
                     }
-                } else {
-                    // Desktop or non-media files: regular download
-                    downloadViaLink(typedBlob, file.name);
                 }
+                
+                // Fallback: regular download for all devices
+                downloadViaLink(typedBlob, file.name);
+                
             } catch (err) {
                 console.error('Download error:', err);
                 alert('⚠️ Download failed: ' + err.message);
