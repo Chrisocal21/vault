@@ -62,6 +62,9 @@ export default async function handler(req, res) {
       originalSize: fileData.originalSize,
       type: fileData.type,
       compressed: fileData.compressed,
+      compressionRatio: fileData.compressionRatio,
+      data: fileData.data,
+      thumbnail: fileData.thumbnail,
       date: new Date().toISOString(),
       favorite: false,
     };
